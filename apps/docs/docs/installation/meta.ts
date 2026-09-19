@@ -1,8 +1,8 @@
 import { defineMeta } from "blume";
 
 export default defineMeta({
-  title: "Getting started",
-  icon: "rocket",
+  title: "Installation",
+  icon: "download",
   // Position among the top-level sidebar groups.
   order: 1,
   pages: [

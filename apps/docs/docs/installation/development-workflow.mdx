@@ -1,0 +1,71 @@
+---
+title: Development workflow
+description: The commands you run while building — dev servers, type checking, formatting, and the test suites.
+---
+
+Run the commands below from the repository root. The usual loop is: start the
+services, make a change, type-check and format it, then run the relevant tests.
+
+## Start the workspace
+
+```sh
+pnpm dev
+```
+
+This starts the client, server, and docs app in parallel. To run one app only,
+use `pnpm --filter @mern/client dev`, `pnpm --filter @mern/server dev`, or
+`pnpm --filter @mern/docs dev`.
+
+## Type check while you work
+
+```sh
+pnpm typecheck
+```
+
+This generates TanStack Router route types and runs each package's typecheck
+script. The docs package has no TypeScript source check of its own.
+
+## Format and lint
+
+```sh
+pnpm check
+pnpm format
+```
+
+`pnpm check` reports formatting and lint problems. `pnpm format` writes
+formatting changes and safe Biome fixes. See [formatting](/development/formatting),
+[linting](/development/linting), and the official [Biome formatter](https://biomejs.dev/formatter/)
+and [linter](https://biomejs.dev/linter/) documentation.
+
+## Run the tests
+
+```sh
+pnpm test
+pnpm test:integration
+```
+
+`pnpm test` validates server configuration without MongoDB. The integration
+command exercises sign-up, sign-in, sessions, sign-out, and origin protection
+against MongoDB using a randomly named `mern_test_*` database. See [Commands](/reference/commands)
+and the [Node.js test runner documentation](https://nodejs.org/api/test.html)
+for the current test commands and runner.
+
+A dedicated testing guide will be added later.
+
+## Build and preview
+
+```sh
+pnpm build
+pnpm start
+```
+
+`pnpm build` builds the client, server, and docs. `pnpm start` runs the compiled
+server; use the Docker commands in [Deployment](/deployment) for the complete
+production-style stack.
+
+For TypeScript's compiler behavior, see the official
+[TypeScript handbook](https://www.typescriptlang.org/docs/handbook/).
+
+## Next steps
+
+Next, browse the [Guides](/guides) or [Commands](/reference/commands).
