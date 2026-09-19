@@ -14,7 +14,8 @@
     "@mern/shared": "workspace:*",
     "better-auth": "1.7.5",
     "express": "^5.2.1",
-    "mongoose": "^9.10.1"
+    "mongoose": "^9.10.1",
+    "resend": "^6.28.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
