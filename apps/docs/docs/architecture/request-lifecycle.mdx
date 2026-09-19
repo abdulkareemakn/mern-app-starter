@@ -1,0 +1,36 @@
+---
+title: Request lifecycle
+description: Trace a request from the browser through the Vite proxy, Express middleware, and MongoDB, back to the React component.
+---
+
+TODO: Introduce the page — walk through what happens between a click and rendered data.
+
+## In development
+
+TODO: Trace the path:
+
+1. The browser calls `/api/...` on port 3000.
+2. Vite proxies `/api` to Express on port 3001, so the browser stays on one origin.
+3. Express middleware assigns `x-mern-client-ip` and Better Auth reads the session.
+4. The route handler reads or writes MongoDB through Mongoose.
+5. The handler responds with JSON that matches a shared contract type.
+
+```text
+Browser ──▶ Vite (3000) ──/api──▶ Express (3001) ──▶ MongoDB
+```
+
+## In production
+
+TODO: Explain that Express serves the built SPA, including the SPA route fallback, so
+the same single-origin proxy reasoning applies.
+
+## End-to-end example
+
+TODO: Walk one concrete request, for example `GET /api/me`, quoting the handler from
+`apps/server/src/app.ts` and the client code that consumes `MeResponse`.
+
+## Where to hook in
+
+TODO: Point out the middleware order in `app.ts` — Better Auth before `express.json()`,
+then the JSON limit, then the API routes, then the 404 for unknown `/api` paths, then
+the error handler.

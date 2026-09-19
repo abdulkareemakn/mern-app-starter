@@ -1,0 +1,48 @@
+---
+title: Development workflow
+description: The commands you run while building — dev servers, type checking, formatting, and the test suites.
+---
+
+TODO: Introduce the page — the day-to-day loop after installation.
+
+## Start the workspace
+
+```sh
+pnpm dev
+```
+
+TODO: Explain that the client, server, and docs app run in parallel, and how to run just
+one of them with `pnpm --filter @mern/client dev`, `pnpm --filter @mern/server dev`, or
+`pnpm --filter @mern/docs dev`.
+
+## Type check while you work
+
+```sh
+pnpm typecheck
+```
+
+TODO: Explain that this generates TanStack Router route types and checks every package.
+
+## Format and lint
+
+```sh
+pnpm check
+pnpm format
+```
+
+TODO: Explain the difference: `check` reports, `format` writes Biome's fixes.
+
+## Run the tests
+
+```sh
+pnpm test
+pnpm test:integration
+```
+
+TODO: Explain that `test` validates configuration without MongoDB, while
+`test:integration` exercises sign-up, sign-in, sessions, sign-out, and origin protection
+against MongoDB using a randomly named `mern_test_*` database.
+
+## Next steps
+
+TODO: Link to `/guides` and `/reference/commands`.

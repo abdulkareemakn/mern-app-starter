@@ -1,0 +1,41 @@
+---
+title: Project structure
+description: A tour of the pnpm workspace, from the apps and packages to the root configuration files.
+---
+
+TODO: Introduce the page — the workspace is small on purpose, and every folder has one job.
+
+## Workspace layout
+
+```text
+apps/
+  client/src/
+    routes/           # TanStack Router file routes
+    lib/auth-client.ts
+  server/src/
+    index.ts          # Startup, database connection, graceful shutdown
+    config.ts         # Environment validation
+    auth.ts           # Better Auth + MongoDB adapter
+    app.ts            # Express middleware and API routes
+  docs/
+    docs/             # This documentation site
+packages/shared/src/
+  index.ts            # Browser-safe API response types
+```
+
+TODO: Add a sentence describing each directory in the tree.
+
+## Root configuration files
+
+TODO: Cover the files a reader will touch: `.env.example`, `biome.json`,
+`pnpm-workspace.yaml`, `compose.yaml`, `compose.db.yaml`, and `Dockerfile`.
+
+## Where to add code
+
+TODO: Explain the intended homes for new code — routes in `app.ts`, models under
+`apps/server/src/models/`, shared contracts in `packages/shared/src/index.ts`, file
+routes under `apps/client/src/routes/`.
+
+## Next steps
+
+TODO: Link to `/architecture` and `/guides/add-an-api-route`.

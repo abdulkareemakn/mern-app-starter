@@ -1,0 +1,42 @@
+---
+title: Authentication
+description: How Better Auth issues and validates email/password sessions, and which collections it owns.
+---
+
+TODO: Introduce the page — authentication is session-based, cookie-carrying, and
+database-backed.
+
+## How sessions work
+
+TODO: Explain the flow: sign-up or sign-in through `authClient`, the session cookie,
+`auth.api.getSession`, and protected server routes.
+
+## Server configuration
+
+TODO: Cover `apps/server/src/auth.ts`:
+
+- `baseURL` from `BETTER_AUTH_URL`, `trustedOrigins` from `APP_URL`
+- `mongodbAdapter` sharing Mongoose's existing connection
+- email/password constraints (8–128 characters)
+- rate limiting with database storage
+- the `x-mern-client-ip` header, always overwritten by the server, so browsers cannot
+  spoof their address
+
+## Client usage
+
+TODO: Cover `authClient.useSession()`, `signUp.email`, `signIn.email`, and `signOut` as
+used in `apps/client/src/routes/index.tsx`.
+
+## Collections Better Auth owns
+
+TODO: Explain that users, accounts, sessions, and verification records are managed by
+the adapter, and that creating a competing Mongoose user schema is a mistake.
+
+## Not enabled yet
+
+TODO: Note that email verification and password reset need a mail provider before they
+are switched on.
+
+## Next steps
+
+TODO: Link to `/guides/protect-a-route` and `/reference/security-checklist`.

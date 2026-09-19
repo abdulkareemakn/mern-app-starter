@@ -1,0 +1,41 @@
+---
+title: Docker
+description: Use compose.db.yaml for local MongoDB and compose.yaml for a complete single-host deployment.
+---
+
+TODO: Introduce the page — there are two Compose files and they are not interchangeable.
+
+## Local development database
+
+TODO: Cover `compose.db.yaml`: MongoDB 8.0, a named volume, port 27017 published only on
+loopback, and the health check. Show the commands:
+
+```sh
+pnpm db:up
+pnpm db:down
+```
+
+## Complete deployment example
+
+TODO: Cover `compose.yaml`: one image containing both apps, Express serving the SPA and
+API, MongoDB with a persistent volume and no published port, the non-root runtime user,
+and the container health check that calls `/api/health`.
+
+```sh
+pnpm docker:up
+pnpm docker:down
+```
+
+TODO: Note that the local-development and full-stack databases use separate volumes and
+do not share accounts, and that stop `pnpm dev` first so port 3000 is free.
+
+## Data and volumes
+
+TODO: Explain that `down` preserves data while adding `--volumes` deletes that stack's
+database permanently.
+
+## What the template does not do
+
+TODO: State the limits plainly: this is a single-host reference that does not provision
+DNS, TLS, backups, or a managed database; secrets should be injected by the deployment
+platform.

@@ -1,0 +1,41 @@
+---
+title: Production build
+description: Build the client and compile the server, then run it with Node or serve the static output elsewhere.
+---
+
+TODO: Introduce the page — what "production" means for each app.
+
+## Build
+
+```sh
+pnpm build
+```
+
+TODO: Explain that this builds the client bundle and compiles the server to `dist/`, and
+that route types are regenerated as part of the client build.
+
+## Configure for production
+
+TODO: Explain the required settings: `NODE_ENV=production`, a public `APP_URL` and
+`BETTER_AUTH_URL` that match, and a unique `BETTER_AUTH_SECRET`.
+
+## Run
+
+```sh
+pnpm start
+```
+
+TODO: Explain that the compiled server serves the client build in production, including
+the SPA route fallback, so the public URL must point at Express (port 3001 by default)
+or a reverse proxy in front of it.
+
+## Static hosting alternative
+
+TODO: Explain that `apps/client/dist` can be served by a static host, but that the API
+and Better Auth still need the server, and cross-origin cookies have to be configured
+deliberately. Point readers back to the same-origin recommendation.
+
+## Verify
+
+TODO: Give a post-deploy check — `GET /api/health` should report `ok` only when MongoDB
+is reachable.

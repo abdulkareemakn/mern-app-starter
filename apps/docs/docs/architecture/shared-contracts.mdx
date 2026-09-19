@@ -1,0 +1,34 @@
+---
+title: Shared contracts
+description: What belongs in packages/shared, how the client imports it, and why it stays type-only.
+---
+
+TODO: Introduce the page — `@mern/shared` describes the JSON that crosses the API
+boundary.
+
+## What lives here
+
+TODO: Cover `HealthResponse`, `MeResponse`, and `ApiError` from
+`packages/shared/src/index.ts`.
+
+## Importing contracts
+
+TODO: Explain the import style and that it must be `import type` so nothing is emitted:
+
+```ts
+import type { MeResponse } from "@mern/shared";
+```
+
+## Rules
+
+TODO: State the rules plainly:
+
+- Types describe JSON responses, not database documents.
+- The package needs no build step because its exports are types only.
+- Types do not validate incoming request bodies; validate at runtime on the server.
+
+## Beyond response types
+
+TODO: Suggest what else may belong here once a project grows — request payload types,
+shared enums, and error codes — and what must never live here (Mongoose models,
+secrets, Node-only code).
