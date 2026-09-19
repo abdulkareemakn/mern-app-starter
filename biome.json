@@ -1,0 +1,19 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.5/schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!**/.tanstack",
+      "!!**/.blume",
+      "!!**/.blume-verify",
+      "!!**/routeTree.gen.ts",
+      "!!**/pnpm-lock.yaml"
+    ]
+  },
+  "formatter": { "enabled": true, "indentStyle": "space" },
+  "linter": { "enabled": true, "rules": { "recommended": true } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "css": { "parser": { "tailwindDirectives": true } }
+}
