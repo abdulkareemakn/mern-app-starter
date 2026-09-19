@@ -14,8 +14,9 @@ export default defineConfig({
     sidebar: {
       display: "group",
     },
-    github: { owner: "abdulkareemakn", repo: "mern-app-starter", dir: "apps/docs" },
   },
+  // Disable "Was this helpful?" feedback widget on each page
+  feedback: false,
   deployment: {
     site: "https://abdulkareemakn.github.io/mern-app-starter/",
   },
