@@ -1,0 +1,27 @@
+{
+  "name": "mern-template",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.3.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter './apps/*' dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter @mern/server start",
+    "typecheck": "pnpm -r typecheck",
+    "check": "biome check .",
+    "format": "biome check --write .",
+    "test": "pnpm --filter @mern/server test",
+    "test:integration": "pnpm --filter @mern/server test:integration",
+    "db:up": "docker compose -f compose.db.yaml up -d --wait",
+    "db:down": "docker compose -f compose.db.yaml down",
+    "docker:up": "docker compose up -d --build --wait",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.5",
+    "typescript": "7.0.2"
+  }
+}

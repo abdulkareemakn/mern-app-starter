@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+injectWorkspacePackages: true
+
+allowBuilds:
+  '@scarf/scarf': true
+  esbuild: true
+  lightningcss: true
