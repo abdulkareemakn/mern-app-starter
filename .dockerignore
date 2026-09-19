@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/.tanstack
+**/.vite
+**/.git
+**/.env
+**/.env.*
+**/*.local
+**/pnpm-lock.yaml
+!pnpm-lock.yaml
+.agents
+.codex
