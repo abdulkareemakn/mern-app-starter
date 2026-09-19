@@ -1,0 +1,16 @@
+{
+  "name": "@mern/emails",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "email dev --dir ."
+  },
+  "devDependencies": {
+    "@react-email/ui": "6.9.5"
+  },
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-email": "6.9.5"
+  }
+}
