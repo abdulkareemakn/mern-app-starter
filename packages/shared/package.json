@@ -1,0 +1,13 @@
+{
+  "name": "@mern/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit --strict src/index.ts"
+  }
+}
