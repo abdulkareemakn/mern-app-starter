@@ -14,7 +14,9 @@ export default defineConfig({
     sidebar: {
       display: "group",
     },
-    // Once this folder is a GitHub repository, add:
-    // github: { owner: "<owner>", repo: "<repo>", dir: "apps/docs" },
+    github: { owner: "abdulkareemakn", repo: "mern-app-starter", dir: "apps/docs" },
+  },
+  deployment: {
+    site: "https://abdulkareemakn.github.io/mern-app-starter/",
   },
 });
