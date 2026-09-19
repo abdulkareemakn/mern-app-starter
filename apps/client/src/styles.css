@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.35rem;
+  background: white;
+}
+
+button {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #64748b;
+  border-radius: 0.35rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
