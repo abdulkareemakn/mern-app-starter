@@ -19,5 +19,6 @@ export default defineConfig({
   feedback: false,
   deployment: {
     site: "https://abdulkareemakn.github.io/mern-app-starter/",
+    base: "/mern-app-starter/",
   },
 });
