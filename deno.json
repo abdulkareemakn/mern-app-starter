@@ -1,0 +1,11 @@
+{
+  "deploy": {
+    "install": "pnpm install --frozen-lockfile",
+    "build": "pnpm --filter @mern/client build && pnpm --filter @mern/server build",
+    "runtime": {
+      "type": "dynamic",
+      "entrypoint": "apps/server/dist/index.js",
+      "cwd": "."
+    }
+  }
+}
