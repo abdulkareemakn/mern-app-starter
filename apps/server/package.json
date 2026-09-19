@@ -1,0 +1,23 @@
+{
+  "name": "@mern/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=../../.env --watch src/index.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node --env-file-if-exists=../../.env dist/index.js",
+    "test": "node --test test/config.test.ts",
+    "test:integration": "node --env-file-if-exists=../../.env --test test/auth.test.ts"
+  },
+  "dependencies": {
+    "@mern/shared": "workspace:*",
+    "better-auth": "1.7.5",
+    "express": "^5.2.1",
+    "mongoose": "^9.10.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.0.0"
+  }
+}
