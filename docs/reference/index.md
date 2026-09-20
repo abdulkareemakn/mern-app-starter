@@ -1,11 +1,11 @@
 ---
 title: Reference
-description: Look-up material for the starter — every root command, its API surface, and the security checklist.
+description: Look-up material for the starter, including root commands, the API surface, and the security checklist.
 ---
 
 # Reference
 
-TODO: Introduce the section — these pages are for looking things up, not for reading
+TODO: Introduce the section. These pages are for looking things up, not for reading
 straight through.
 
 <div class="grid cards" markdown>

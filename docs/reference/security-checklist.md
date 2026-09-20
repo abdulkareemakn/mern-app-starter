@@ -5,7 +5,7 @@ description: Confirm these settings before exposing an environment to real users
 
 # Security checklist
 
-TODO: Introduce the page — a short list to run through before a deployment goes public.
+TODO: Introduce the page. Add a short list to run through before a deployment goes public.
 
 ## Secrets
 

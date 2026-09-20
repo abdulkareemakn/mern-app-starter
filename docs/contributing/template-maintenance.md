@@ -5,13 +5,13 @@ description: Keep the template, its environment file, and its documentation in s
 
 # Template maintenance
 
-TODO: Introduce the page — a starter rots when its examples and its docs drift apart.
+TODO: Introduce the page. A starter rots when its examples and its docs drift apart.
 
 ## Files to update together
 
 TODO: List the pairs that must change together, for example:
 
-- root `.env.example` and `/docs/configuration/environment-variables`
+- root `.env.example` and `/docs/build/environment-variables`
 - root `package.json` scripts and `/docs/reference/commands`
 - `packages/shared/src/index.ts`
 - `apps/server/src/app.ts` and `/docs/reference/api-endpoints`

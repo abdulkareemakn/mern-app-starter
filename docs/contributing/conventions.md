@@ -5,7 +5,7 @@ description: The code style, naming, and verification rules every change is expe
 
 # Conventions
 
-TODO: Introduce the page — short, enforceable rules beat long prose.
+TODO: Introduce the page. Short, enforceable rules beat long prose.
 
 ## Formatting and linting
 

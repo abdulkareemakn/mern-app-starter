@@ -1,11 +1,11 @@
 ---
 title: Contributing
-description: House rules for changing the starter — conventions, scope, and keeping the template usable as a template.
+description: House rules for changing the starter, including conventions, scope, and keeping the template reusable.
 ---
 
 # Contributing
 
-TODO: Introduce the section — this repository is both a course project and a template
+TODO: Introduce the section. This repository is both a course project and a template
 other people copy, so changes carry a little extra weight.
 
 <div class="grid cards" markdown>

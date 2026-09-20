@@ -88,4 +88,4 @@ Put new code in the package that owns it:
 
 ## Next steps
 
-Next, follow the [Add an API route](/guides/add-an-api-route) guide.
+Next, follow [API routes](/build/api-routes).

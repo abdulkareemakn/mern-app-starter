@@ -69,7 +69,7 @@ deno deploy env add BETTER_AUTH_URL "https://your-app.deno.net"
 
 `MONGODB_URI` and `BETTER_AUTH_SECRET` are secrets; do not commit them or put them in
 the client. Leave `TRUST_PROXY` unset on Deno Deploy unless Deno support gives you
-specific trusted proxy addresses—guessing it weakens rate-limit client identification.
+specific trusted proxy addresses. Guessing weakens rate-limit client identification.
 
 Use each variable in the `production` context:
 

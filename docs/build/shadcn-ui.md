@@ -1,9 +1,9 @@
 ---
-title: shadcn/ui components
+title: shadcn/ui
 description: Add, customize, and maintain shadcn components built on Base UI in this workspace.
 ---
 
-# shadcn/ui components
+# shadcn/ui
 
 The frontend uses **shadcn/ui with Base UI**, the Nova style, and a neutral theme. Button, Input, Label, and Card are installed and used by the auth page. Component source lives in your repository: you can edit it directly.
 

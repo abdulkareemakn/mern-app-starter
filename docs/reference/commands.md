@@ -5,7 +5,7 @@ description: Every script in the root package.json, what it runs, and when to us
 
 # Commands
 
-TODO: Introduce the page — all commands run from the repository root.
+TODO: Introduce the page. All commands run from the repository root.
 
 ## Root scripts
 

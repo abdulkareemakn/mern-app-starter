@@ -1,11 +1,11 @@
 ---
 title: API endpoints
-description: The starter's HTTP surface — health, the session-protected user route, and Better Auth's endpoints.
+description: The starter's HTTP surface, including health, the session-protected user route, and Better Auth endpoints.
 ---
 
 # API endpoints
 
-TODO: Introduce the page — these are the routes the template ships; add your own as the
+TODO: Introduce the page. These are the routes the template ships; add your own as the
 project grows.
 
 ## Health

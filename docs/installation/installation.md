@@ -42,10 +42,12 @@ finished.
 pnpm dev
 ```
 
-The root command starts the client and server through Portless:
+The root command starts the client, API, and email preview through Portless:
 
 - client: [https://mern.localhost](https://mern.localhost)
-- server: [https://api.mern.localhost](https://api.mern.localhost)
+- API: [https://api.mern.localhost](https://api.mern.localhost)
+- email preview: [https://emails.localhost](https://emails.localhost)
+- MailDev inbox: [https://mail.localhost](https://mail.localhost)
 
 On its first run, Portless creates a local certificate authority and may ask to
 trust it. Run `pnpm exec portless trust` later if you skip the prompt.

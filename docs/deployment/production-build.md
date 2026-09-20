@@ -34,7 +34,7 @@ BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters-long
 
 Generate the secret once with `openssl rand -base64 32`. `APP_URL` and
 `BETTER_AUTH_URL` must be the identical public HTTPS origin. See
-[environment variables](/configuration/environment-variables) for the full reference.
+[environment variables](/build/environment-variables) for the full reference.
 
 ## Run
 

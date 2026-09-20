@@ -1,6 +1,6 @@
 ---
 title: Development workflow
-description: The commands you run while building — dev servers, type checking, formatting, and the test suites.
+description: The commands you run while building, including dev servers, type checking, formatting, and tests.
 ---
 
 # Development workflow
@@ -14,9 +14,14 @@ services, make a change, type-check and format it, then run the relevant tests.
 pnpm dev
 ```
 
-This starts the client and server through Portless. Open
-`https://mern.localhost` or `https://api.mern.localhost`. Portless terminates local TLS while the apps
-receive plain HTTP; its names and fixed internal ports are in `portless.json`.
+This starts the client, API, and email preview through Portless:
+
+- `https://mern.localhost`
+- `https://api.mern.localhost`
+- `https://emails.localhost`
+- `https://mail.localhost`
+
+Portless terminates local TLS while the processes receive plain HTTP. Their names and fixed internal ports are defined in `portless.json`.
 
 On first use, approve the certificate-authority prompt. If you skip it, run:
 
@@ -55,8 +60,8 @@ pnpm format
 ```
 
 `pnpm check` reports formatting and lint problems. `pnpm format` writes
-formatting changes and safe Biome fixes. See [formatting](/development/formatting),
-[linting](/development/linting), and the official [Biome formatter](https://biomejs.dev/formatter/)
+formatting changes and safe Biome fixes. See [formatting](/quality/formatting),
+[linting](/quality/linting), and the official [Biome formatter](https://biomejs.dev/formatter/)
 and [linter](https://biomejs.dev/linter/) documentation.
 
 ## Run the tests
@@ -66,13 +71,12 @@ pnpm test
 pnpm test:integration
 ```
 
-`pnpm test` validates server configuration without MongoDB. The integration
-command exercises sign-up, sign-in, sessions, sign-out, and origin protection
-against MongoDB using a randomly named `mern_test_*` database. See [Commands](/reference/commands)
-and the [Node.js test runner documentation](https://nodejs.org/api/test.html)
-for the current test commands and runner.
+`pnpm test` runs the Vitest unit suite followed by the API integration suite.
+Integration tests use Supertest and create a randomly named `mern_test_*`
+database when persistence is required. See [Commands](/reference/commands) and
+[Testing](/quality/testing) for the current test commands and database setup.
 
-A dedicated testing guide will be added later.
+See [Testing](/quality/testing) for the database and test-data expectations.
 
 ## Build and preview
 
@@ -90,4 +94,4 @@ For TypeScript's compiler behavior, see the official
 
 ## Next steps
 
-Next, browse the [Guides](/guides) or [Commands](/reference/commands).
+Next, browse [Build your app](/build) or [Commands](/reference/commands).
