@@ -1,9 +1,9 @@
 ---
-title: Installation
+title: Install
 description: Install dependencies, generate the Better Auth secret, start MongoDB, and open the app.
 ---
 
-# Installation
+# Install
 
 After this page, the client is available at
 [https://mern.localhost](https://mern.localhost), the API is proxied through it,
