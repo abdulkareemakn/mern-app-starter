@@ -1,5 +1,0 @@
-{
-  "title": "Deployment",
-  "icon": "Ship",
-  "pages": ["index", "production-build", "docker"]
-}

@@ -3,12 +3,9 @@
   "files": {
     "includes": [
       "**",
-      "!!docs",
       "!!**/node_modules",
       "!!**/dist",
       "!!**/.tanstack",
-      "!!**/.blume",
-      "!!**/.blume-verify",
       "!!**/routeTree.gen.ts",
       "!!**/pnpm-lock.yaml"
     ]

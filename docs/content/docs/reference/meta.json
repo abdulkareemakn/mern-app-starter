@@ -1,5 +1,0 @@
-{
-  "title": "Reference",
-  "icon": "ListChecks",
-  "pages": ["index", "commands", "api-endpoints", "security-checklist"]
-}

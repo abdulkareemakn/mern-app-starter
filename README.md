@@ -19,7 +19,7 @@ pnpm db:up
 pnpm dev
 ```
 
-Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client and API at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin. The standalone Fumadocs site lives in `docs/`.
+Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client and API at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin.
 
 Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app connects before accepting requests and exits if startup fails.
 
@@ -70,8 +70,6 @@ For a production build outside Docker, run `pnpm build`, set `NODE_ENV=productio
 ## Frontend components
 
 The auth page uses the included shadcn Button, Input, Label, and Card components. Run `pnpm ui add dialog` from the root to add another component; `pnpm ui info` shows the active Base UI configuration. This template is already initialized.
-
-See the [shadcn/ui guide](docs/content/docs/guides/shadcn-ui.mdx) in the documentation site's Guides section for CLI previews, `components.json`, customization, themes, Base UI composition, and upgrades.
 
 ## Two Docker workflows
 

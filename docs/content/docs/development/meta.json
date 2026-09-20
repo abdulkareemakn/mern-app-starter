@@ -1,5 +1,0 @@
-{
-  "title": "Development",
-  "icon": "Code",
-  "pages": ["index", "middleware", "formatting", "linting"]
-}
