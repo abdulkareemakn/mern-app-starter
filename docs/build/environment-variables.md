@@ -13,14 +13,49 @@ cp .env.example .env
 
 Keep `.env` private. Commit `.env.example` with safe placeholders so every required setting remains discoverable.
 
+The configuration path has one direction:
+
+```text
+.env or hosting platform
+        ↓
+Node loads process.env
+        ↓
+readConfig(process.env)
+        ↓
+Zod validates and transforms
+        ↓
+typed Config used by the server
+```
+
+Node handles loading. Zod defines the server's contract. Application modules consume `Config` instead of reading arbitrary values from `process.env`.
+
 ## How values are loaded
 
-- Server scripts load the root `.env` with Node's `--env-file-if-exists` option.
+- Development and production server scripts load the root `.env`, when present, with Node's `--env-file-if-exists` option.
 - Vite reads the root directory because `apps/client/vite.config.ts` sets `envDir`.
 - Playwright loads the root `.env` before starting its test servers.
 - Docker Compose reads values supplied by the shell or a root `.env` file.
 
-The server validates its runtime settings in `apps/server/src/config.ts` and exits during startup when a required value is invalid.
+Production does not require an environment file. A hosting platform or container can inject the same variables directly.
+
+The server passes `process.env` to `readConfig()` once in `apps/server/src/index.ts`. The Zod schema in `apps/server/src/config.ts` validates the raw strings before MongoDB connects or Express listens. `readConfig()` does not load files, so unit tests can pass a plain object without depending on a developer's `.env`.
+
+## Validated configuration
+
+The rest of the server receives this parsed shape:
+
+| Config property | Environment source | Parsed value |
+| --- | --- | --- |
+| `nodeEnv` | `NODE_ENV` | `development`, `test`, or `production` |
+| `port` | `PORT` | Number from 1 through 65535 |
+| `mongodbUri` | `MONGODB_URI` or `TEST_MONGODB_URI` | MongoDB connection URL |
+| `appUrl` | `APP_URL` | Normalized HTTP(S) origin |
+| `authUrl` | `BETTER_AUTH_URL` | Normalized HTTP(S) origin |
+| `secret` | `BETTER_AUTH_SECRET` | String with at least 32 characters |
+| `resendApiKey` | `RESEND_API_KEY` | Required string in production |
+| `trustProxy` | `TRUST_PROXY` | Array parsed from a comma-separated string |
+
+For example, `PORT=4321` becomes the number `4321`; callers do not parse it again.
 
 ## Server settings
 
@@ -29,7 +64,7 @@ The server validates its runtime settings in `apps/server/src/config.ts` and exi
 | `NODE_ENV` | `development` | Must be `development`, `test`, or `production`. |
 | `PORT` | `3001` | Internal port used by Express. |
 | `MONGODB_URI` | None | MongoDB URL for development or production application data. |
-| `TRUST_PROXY` | Empty | Comma-separated IP addresses or CIDRs for trusted reverse proxies. |
+| `TRUST_PROXY` | Empty | Comma-separated Express trusted-proxy values such as IP addresses or CIDRs. |
 
 Do not set `TRUST_PROXY` to a broad value unless that network is actually controlled by your proxy. Express uses it when determining the client address.
 
@@ -71,7 +106,7 @@ Portless maps stable hostnames to the fixed internal ports in `portless.json`:
 
 The public URLs do not include the internal port. Portless terminates local HTTPS and forwards to each process.
 
-Development email uses SMTP on `localhost:3025`. Production email requires `RESEND_API_KEY`, which must be stored only in the server environment.
+Development email uses SMTP on `localhost:3025`. Production requires `RESEND_API_KEY`; startup fails when it is absent. Keep it only in the server environment.
 
 ## Test database
 
@@ -80,6 +115,10 @@ TEST_MONGODB_URI=mongodb://127.0.0.1:27017
 ```
 
 Test mode requires this separate setting and never falls back to `MONGODB_URI`. Integration and E2E runs add random database names and remove those databases afterward.
+
+Do not point `TEST_MONGODB_URI` at production, Atlas, a shared server, or the normal development database. The configured server must permit the test user to create and drop temporary databases.
+
+Unit configuration tests call `readConfig()` with explicit objects and do not need `.env`. Integration and E2E entrypoints load `.env` only to obtain the explicitly configured test server.
 
 ## Docker port
 
@@ -90,6 +129,17 @@ Test mode requires this separate setting and never falls back to `MONGODB_URI`. 
 Only variables prefixed with `VITE_` are exposed through `import.meta.env`. Never use that prefix for secrets, MongoDB URLs, private service credentials, or `BETTER_AUTH_SECRET`.
 
 This starter does not need a browser-visible API URL because the client calls the same-origin `/api` path.
+
+## Configuration errors
+
+Invalid configuration stops startup and identifies the affected variable without printing its value:
+
+```text
+Error: Invalid environment configuration:
+- MONGODB_URI: MONGODB_URI is required when NODE_ENV=development
+```
+
+Fix every listed variable and restart the server. Do not catch these errors and continue with partial configuration.
 
 ## Add a setting
 
@@ -104,7 +154,11 @@ For a new server setting:
 ## Reference
 
 - [Node environment files](https://nodejs.org/api/environment_variables.html#env-files)
+- [Node `--env-file` command-line option](https://nodejs.org/api/cli.html#--env-filefile)
+- [Zod basics](https://zod.dev/basics)
 - [Vite environment variables](https://vite.dev/guide/env-and-mode)
 - [Portless](https://github.com/vercel-labs/portless)
+- [Testing](/quality/testing)
+- [Production build](/deployment/production-build)
 - [Authentication](/build/authentication)
 - [Database](/build/database)

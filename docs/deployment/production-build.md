@@ -30,10 +30,13 @@ MONGODB_URI=mongodb+srv://...
 APP_URL=https://app.example.com
 BETTER_AUTH_URL=https://app.example.com
 BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters-long
+RESEND_API_KEY=re_example
 ```
 
 Generate the secret once with `openssl rand -base64 32`. `APP_URL` and
-`BETTER_AUTH_URL` must be the identical public HTTPS origin. See
+`BETTER_AUTH_URL` must be the identical public HTTPS origin. `RESEND_API_KEY`
+is required in production because email is sent through Resend. The host may
+inject these values directly; a deployed `.env` file is not required. See
 [environment variables](/build/environment-variables) for the full reference.
 
 ## Run
