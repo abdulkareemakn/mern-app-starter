@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { describe, expect, test } from "vitest";
-import { readConfig } from "../../src/config.ts";
+import { readConfig } from "../../apps/server/src/config.ts";
 
 const validEnv = {
   MONGODB_URI: "mongodb://127.0.0.1:27017/mern",

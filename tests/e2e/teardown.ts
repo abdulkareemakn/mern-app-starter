@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
-import { connectDatabase, disconnectDatabase } from "../src/database.ts";
+import {
+  connectDatabase,
+  disconnectDatabase,
+} from "../../apps/server/src/database.ts";
 
 export default async function teardown() {
   const uri = process.env.TEST_MONGODB_URI;

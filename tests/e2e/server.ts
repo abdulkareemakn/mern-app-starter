@@ -1,12 +1,15 @@
 import { randomBytes } from "node:crypto";
 import mongoose from "mongoose";
-import { createApp } from "../src/app.ts";
-import { createAuth } from "../src/auth.ts";
-import { readConfig } from "../src/config.ts";
-import { connectDatabase, disconnectDatabase } from "../src/database.ts";
+import { createApp } from "../../apps/server/src/app.ts";
+import { createAuth } from "../../apps/server/src/auth.ts";
+import { readConfig } from "../../apps/server/src/config.ts";
+import {
+  connectDatabase,
+  disconnectDatabase,
+} from "../../apps/server/src/database.ts";
 
 try {
-  process.loadEnvFile("../../.env");
+  process.loadEnvFile(".env");
 } catch {}
 
 const dbName = process.env.E2E_DB_NAME;

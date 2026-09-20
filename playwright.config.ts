@@ -12,8 +12,8 @@ if (!process.env.TEST_MONGODB_URI) {
 process.env.E2E_DB_NAME = `mern_e2e_${randomUUID().replaceAll("-", "")}`;
 
 export default defineConfig({
-  testDir: "./e2e",
-  globalTeardown: "./apps/server/test/e2e-teardown.ts",
+  testDir: "./tests/e2e",
+  globalTeardown: "./tests/e2e/teardown.ts",
   fullyParallel: false,
   workers: 1,
   reporter: "line",
@@ -25,7 +25,7 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: [
     {
-      command: "node apps/server/test/e2e-server.ts",
+      command: "node tests/e2e/server.ts",
       url: "http://127.0.0.1:3001/api/health",
       reuseExistingServer: false,
       timeout: 30_000,

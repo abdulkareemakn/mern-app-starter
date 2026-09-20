@@ -108,11 +108,13 @@ Run these at the repository root:
 
 ## Testing
 
+See [TESTING.md](TESTING.md) for the full testing guide, including test-layer boundaries, local setup, CI behavior, and troubleshooting.
+
 Tests are split by cost and purpose:
 
-- **Unit** (`apps/server/test/unit/`) uses Vitest for isolated configuration and Zod schema behavior.
-- **API integration** (`apps/server/test/integration/`) uses Vitest and Supertest to send requests through Express, middleware, Better Auth, and MongoDB without starting an HTTP listener.
-- **E2E** (`e2e/`) uses Playwright to drive the real React → Express → MongoDB sign-up, protected API, and sign-out workflow, plus the 404 page served for unknown client URLs.
+- **Unit** (`tests/unit/`) uses Vitest for isolated configuration and Zod schema behavior.
+- **API integration** (`tests/integration/`) uses Vitest and Supertest to send requests through Express, middleware, Better Auth, and MongoDB without starting an HTTP listener.
+- **E2E** (`tests/e2e/`) uses Playwright to drive the real React → Express → MongoDB sign-up, protected API, and sign-out workflow, plus the 404 page served for unknown client URLs.
 
 Start the local MongoDB container with `pnpm db:up`, then set `TEST_MONGODB_URI=mongodb://127.0.0.1:27017` in `.env` before running integration or E2E tests. Test mode requires this variable and never falls back to `MONGODB_URI`. Each persistence test run creates and deletes a randomly named `mern_test_*` or `mern_e2e_*` database; the configured MongoDB user therefore needs permission to create and drop databases.
 

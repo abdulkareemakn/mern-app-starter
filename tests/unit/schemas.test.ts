@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { createUserSchema } from "../../src/schemas/create-user.ts";
+import { createUserSchema } from "../../apps/server/src/schemas/create-user.ts";
 
 describe("createUserSchema", () => {
   test("parses and normalizes a valid user", () => {

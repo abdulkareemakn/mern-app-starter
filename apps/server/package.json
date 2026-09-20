@@ -7,9 +7,9 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "start": "node --env-file-if-exists=../../.env dist/index.js",
-    "test": "vitest run test/unit",
-    "test:unit": "vitest run test/unit",
-    "test:integration": "vitest run test/integration"
+    "test": "vitest run --root ../.. --config vitest.config.ts tests/unit",
+    "test:unit": "vitest run --root ../.. --config vitest.config.ts tests/unit",
+    "test:integration": "vitest run --root ../.. --config vitest.config.ts tests/integration"
   },
   "dependencies": {
     "@mern/shared": "workspace:*",

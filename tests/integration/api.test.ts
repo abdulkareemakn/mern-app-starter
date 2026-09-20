@@ -1,8 +1,8 @@
 import request from "supertest";
 import { describe, expect, test } from "vitest";
-import { createApp } from "../../src/app.ts";
-import type { createAuth } from "../../src/auth.ts";
-import type { Config } from "../../src/config.ts";
+import { createApp } from "../../apps/server/src/app.ts";
+import type { createAuth } from "../../apps/server/src/auth.ts";
+import type { Config } from "../../apps/server/src/config.ts";
 
 const auth = { handler: () => new Response() } as unknown as ReturnType<
   typeof createAuth

@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from "vitest";
-import type { Config } from "../../src/config.ts";
+import type { Config } from "../../apps/server/src/config.ts";
 
 const { createTransport, sendMail } = vi.hoisted(() => ({
   createTransport: vi.fn(),
@@ -12,7 +12,7 @@ vi.mock("nodemailer", () => ({
   },
 }));
 
-const { sendEmail } = await import("../../src/lib/email-client.ts");
+const { sendEmail } = await import("../../apps/server/src/lib/email-client.ts");
 const config = { nodeEnv: "development" } as Config;
 
 beforeEach(() => vi.clearAllMocks());
