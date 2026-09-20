@@ -9,7 +9,7 @@ repo_name = "abdulkareemakn/mern-app-starter"
 edit_uri = "blob/main/docs/"
 
 nav = [
-  { "Introduction" = "index.md" },
+  { "Home" = "index.md" },
   { "Installation" = [
     "installation/prerequisites.md",
     "installation/installation.md",
@@ -81,7 +81,7 @@ features = [
   "navigation.path",
   # "navigation.prune",
   "navigation.sections",
-  # "navigation.tabs",
+  "navigation.tabs",
   # "navigation.tabs.sticky",
   "navigation.top",
   "navigation.tracking",
