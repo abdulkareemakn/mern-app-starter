@@ -4,9 +4,9 @@ site_description = "Build and deploy the MERN course starter."
 
 # copyright = "Copyright &copy; 2026 Your name"
 
-# repo_url = "https://github.com/user/repo"
-# repo_name = "user/repo"
-# edit_uri = "edit/main/docs/"
+repo_url = "https://github.com/abdulkareemakn/mern-app-starter"
+repo_name = "abdulkareemakn/mern-app-starter"
+edit_uri = "blob/main/docs/"
 
 nav = [
   { "Introduction" = "index.md" },
@@ -64,7 +64,7 @@ language = "en"
 features = [
   "announce.dismiss",
   # "content.action.edit",
-  # "content.action.view",
+  "content.action.view",
   "content.code.annotate",
   "content.code.copy",
   "content.code.select",
