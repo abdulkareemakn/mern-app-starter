@@ -19,7 +19,7 @@ pnpm db:up
 pnpm dev
 ```
 
-Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client, API, and docs at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin. The docs site is at **https://docs.mern.localhost**; see `apps/docs/README.md` for how its content is organized.
+Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client and API at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin. The standalone Fumadocs site lives in `docs/`.
 
 Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app connects before accepting requests and exits if startup fails.
 
@@ -35,7 +35,6 @@ apps/
     config.ts         # Environment validation
     auth.ts           # Better Auth + MongoDB adapter
     app.ts            # Express middleware and API routes
-  docs/docs/          # Documentation site content (Blume)
 packages/shared/src/
   index.ts            # Browser-safe API response types
 ```
@@ -52,7 +51,7 @@ Run these at the repository root:
 
 | Command | Purpose |
 | --- | --- |
-| `pnpm dev` | Start client, API, and docs through Portless |
+| `pnpm dev` | Start client and API through Portless |
 | `pnpm build` | Build the client and compile the server |
 | `pnpm typecheck` | Generate route types and check all packages |
 | `pnpm check` | Check formatting and lint rules |

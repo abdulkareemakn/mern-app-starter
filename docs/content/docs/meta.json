@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "index",
+    "installation",
+    "development",
+    "guides",
+    "configuration",
+    "deployment",
+    "reference",
+    "contributing"
+  ]
+}

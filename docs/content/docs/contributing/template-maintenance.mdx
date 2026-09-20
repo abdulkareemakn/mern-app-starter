@@ -1,0 +1,37 @@
+---
+title: Template maintenance
+description: Keep the template, its environment file, and its documentation in sync as the starter evolves.
+---
+
+TODO: Introduce the page — a starter rots when its examples and its docs drift apart.
+
+## Files to update together
+
+TODO: List the pairs that must change together, for example:
+
+- root `.env.example` and `/docs/configuration/environment-variables`
+- root `package.json` scripts and `/docs/reference/commands`
+- `packages/shared/src/index.ts`
+- `apps/server/src/app.ts` and `/docs/reference/api-endpoints`
+
+## Generated files
+
+TODO: Explain that `apps/client/src/routeTree.gen.ts` and `pnpm-lock.yaml` are committed
+on purpose, that the route tree is generated during development and build, and that
+neither should be hand-edited.
+
+## Publishing as a GitHub template
+
+TODO: Explain publishing the repository, enabling **Settings → General → Template
+repository**, and letting students use **Use this template**. Note that the starter
+assumes no license yet, so choose one before distributing.
+
+## Keeping the README honest
+
+TODO: Explain that the root `README.md` is the summary and the docs site is the detail,
+and that both should agree on commands and ports.
+
+## Version discipline
+
+TODO: Note the pinned versions worth calling out when they change: Node 24+, pnpm 11.3.0,
+TypeScript 7, React 19, Vite 8, Express 5, Better Auth 1.7.5, and Mongoose 9.

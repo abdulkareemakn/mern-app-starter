@@ -1,0 +1,21 @@
+---
+title: Development
+description: The tools and conventions that keep the workspace consistent while you build.
+---
+
+Formatting and linting are configured once at the repository root and apply to every
+package in the workspace.
+
+<Cards>
+  <Card title="Formatting" href="/docs/development/formatting">
+    How Biome formats source files and how to customize its formatter.
+  </Card>
+  <Card title="Linting" href="/docs/development/linting">
+    How Biome checks code and how to tune its lint rules.
+  </Card>
+</Cards>
+
+<Callout type="tip" title="One configuration file">
+  Start with the root `biome.json`. This workspace does not use separate ESLint or
+  Prettier configuration files.
+</Callout>

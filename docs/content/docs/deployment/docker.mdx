@@ -1,0 +1,62 @@
+---
+title: Docker
+description: Build the production image or run the complete application and MongoDB stack with Docker Compose.
+---
+
+The included multi-stage `Dockerfile` builds the client and server, then creates a
+smaller production image that runs as the non-root `node` user. Environment files are
+excluded from the image; provide secrets only at runtime.
+
+## Build the image
+
+From the repository root:
+
+```sh
+docker build -t mern-template .
+```
+
+The image contains the compiled server and `apps/client/dist`. It expects a reachable
+MongoDB instance plus the production settings from [Production build](/docs/deployment/production-build).
+
+## Run the complete stack
+
+For a single host, copy `.env.example` to `.env`, set `BETTER_AUTH_SECRET`, and set both
+public URL variables to your real HTTPS origin. Then run:
+
+```sh
+pnpm docker:up
+```
+
+This runs `compose.yaml`: one app image, Express serving the SPA and API, and MongoDB
+on an internal network with a persistent volume. The app is published on port 3000 by
+default; change `APP_PORT` to use another host port. Stop `pnpm dev` first if it is using
+that port.
+
+## Data and volumes
+
+Stop the stack with:
+
+```sh
+pnpm docker:down
+```
+
+This preserves its `mongo-data` volume. `docker compose down --volumes` permanently
+deletes the full-stack database. The local development database below uses a separate
+Compose project and volume, so it does not share accounts or data with this stack.
+
+## Local development database
+
+Use `compose.db.yaml` when development runs on your machine but MongoDB runs in Docker:
+
+```sh
+pnpm db:up
+pnpm db:down
+```
+
+It runs MongoDB 8.0 with a health check and exposes port 27017 only on loopback.
+
+## What the template does not do
+
+This is a single-host reference. It does not provision DNS, TLS, backups, or a managed
+database. Put the app behind your provider's HTTPS ingress or reverse proxy, keep
+MongoDB private, back up its volume, and inject secrets through the deployment platform.

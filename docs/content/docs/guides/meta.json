@@ -1,0 +1,12 @@
+{
+  "title": "Guides",
+  "icon": "Compass",
+  "pages": [
+    "index",
+    "add-an-api-route",
+    "add-a-data-model",
+    "add-a-client-page",
+    "shadcn-ui",
+    "protect-a-route"
+  ]
+}

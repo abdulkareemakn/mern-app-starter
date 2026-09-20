@@ -1,0 +1,52 @@
+---
+title: Environment variables
+description: Reference for every root .env setting, including which ones reach the browser.
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+
+TODO: Introduce the page. The root `.env.example` is the source of truth; this page
+explains each value.
+
+## How environment files load
+
+TODO: Explain that Node loads the root `.env` for server commands through
+`--env-file-if-exists`, Vite reads it for the development proxy, and the Docker build
+excludes environment files.
+
+## Application settings
+
+TODO: Document `NODE_ENV`, `PORT`, `API_PORT`, and `MONGODB_URI`. `PORT` defaults to 3001
+for Express; Portless sets it when starting the app. `API_PORT` defaults to 3001 and tells
+Vite where the internal Express server is. The server exits if it cannot connect to MongoDB.
+
+<TypeTable
+  type={{
+    NODE_ENV: { type: '"development" | "test" | "production"', default: "development", description: "Runtime mode." },
+    PORT: { type: "number", default: "3001", description: "Port the Express server listens on." },
+    API_PORT: { type: "number", default: "3001", description: "Internal Express port used by Vite's development proxy." },
+    MONGODB_URI: { type: "string", description: "MongoDB connection URL." },
+  }}
+/>
+
+## Authentication settings
+
+TODO: Document `APP_URL`, `BETTER_AUTH_URL`, and `BETTER_AUTH_SECRET`. Note that the two
+URLs must match in this same-origin template and that the secret must be at least 32
+characters.
+
+## Proxy settings
+
+TODO: Document `TRUST_PROXY`. Explain that it takes a comma-separated list of trusted
+proxy IPs or CIDRs, that an empty value trusts none, and that a user behind an
+unconfigured proxy shares that proxy's rate-limit bucket.
+
+## Docker settings
+
+TODO: Document `APP_PORT`. Explain that it selects the published host port and does not
+change the public URL.
+
+## Browser exposure
+
+TODO: State the rule clearly: only variables prefixed `VITE_` can reach browser code,
+and that prefix must never be used for secrets or database URLs.

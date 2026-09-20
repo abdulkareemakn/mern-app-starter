@@ -1,0 +1,10 @@
+{
+  "title": "Installation",
+  "icon": "Download",
+  "pages": [
+    "prerequisites",
+    "installation",
+    "project-structure",
+    "development-workflow"
+  ]
+}
