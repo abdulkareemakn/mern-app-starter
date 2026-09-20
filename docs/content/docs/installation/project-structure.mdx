@@ -27,7 +27,8 @@ The root `docs/` site is deliberately outside that workspace.
 │   │   │   ├── auth.ts         # Better Auth configuration
 │   │   │   ├── config.ts       # Environment validation
 │   │   │   ├── index.ts        # Database connection and startup
-│   │   │   └── lib/             # Server integrations, such as email
+│   │   │   ├── lib/            # Server integrations, such as email
+│   │   │   └── middleware/     # Authentication and authorization guards
 │   │   └── test/               # Node test-runner tests
 ├── packages/
 │   ├── emails/                 # React Email templates
@@ -74,6 +75,7 @@ Put new code in the package that owns it:
   `apps/server/src/lib/`.
 - Add authentication changes in `apps/server/src/auth.ts`; keep environment
   validation in `apps/server/src/config.ts`.
+- Add reusable Express guards under `apps/server/src/middleware/`.
 - Add application models under `apps/server/src/models/` when the first model is
   needed. That directory does not exist yet because the starter has no application
   models.

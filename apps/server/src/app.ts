@@ -1,10 +1,11 @@
 import { fileURLToPath } from "node:url";
 import type { ApiError, HealthResponse, MeResponse } from "@mern/shared";
-import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
+import { toNodeHandler } from "better-auth/node";
 import express, { type ErrorRequestHandler } from "express";
 import mongoose from "mongoose";
 import type { createAuth } from "./auth.ts";
 import type { Config } from "./config.ts";
+import { authMiddleware } from "./middleware/auth.ts";
 
 export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   const app = express();
@@ -27,14 +28,8 @@ export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
       .json({ status: ready ? "ok" : "unavailable" } satisfies HealthResponse);
   });
 
-  app.get("/api/me", async (req, res) => {
-    const session = await auth.api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    });
-    if (!session) {
-      res.status(401).json({ error: "Sign in to continue" } satisfies ApiError);
-      return;
-    }
+  app.get("/api/me", authMiddleware(auth), (_req, res) => {
+    const { session } = res.locals;
     const { id, name, email } = session.user;
     res.json({ user: { id, name, email } } satisfies MeResponse);
   });
