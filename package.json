@@ -14,8 +14,11 @@
     "ui": "cd apps/client && pnpm dlx shadcn@latest",
     "check": "biome check .",
     "format": "biome check --write .",
-    "test": "pnpm --filter @mern/server test",
+    "test": "pnpm test:unit && pnpm test:integration",
+    "test:unit": "pnpm --filter @mern/server test:unit",
     "test:integration": "pnpm --filter @mern/server test:integration",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "db:up": "docker compose -f compose.db.yaml up -d --wait",
     "db:down": "docker compose -f compose.db.yaml down",
     "docker:up": "docker compose up -d --build --wait",
@@ -23,6 +26,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
+    "@playwright/test": "^1.63.0",
     "portless": "^0.15.6",
     "typescript": "7.0.2"
   }

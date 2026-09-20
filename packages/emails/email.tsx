@@ -1,5 +1,4 @@
 import { Body, Button, Head, Html } from "react-email";
-import * as React from "react";
 
 export default function Email() {
   return (

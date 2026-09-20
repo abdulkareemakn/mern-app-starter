@@ -19,7 +19,9 @@ pnpm db:up
 pnpm dev
 ```
 
-Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client and API at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin.
+Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client, API, template preview, and local inbox at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin.
+
+Local email is captured automatically by MailDev. Open **https://mail.localhost** (or http://localhost:3003) to inspect messages; application code sends through `sendEmail` from `apps/server/src/lib/email-client.ts`. Development uses local SMTP on port 3025, while production uses Resend and requires `RESEND_API_KEY`.
 
 Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app connects before accepting requests and exits if startup fails.
 
@@ -47,6 +49,38 @@ Mongoose runs **only on the server**. Import shared contracts with `import type 
 The starter endpoints are `GET /api/health`, `GET /api/me` (requires a session), and Better Auth's `/api/auth/*` routes. Keep the auth handler before `express.json()`. Express 5 forwards rejected async route handlers to the error middleware automatically. Protect every private endpoint on the server even if the UI also hides it.
 
 Use `authMiddleware(auth)` before a private route's handler. It returns `401` when no session exists and exposes the validated session as `res.locals.session`. Add future route-specific middleware beside `middleware/auth.ts` and place it after `authMiddleware` when it needs the authenticated user.
+
+## Validate API requests
+
+Put each Zod schema in `apps/server/src/schemas/`; it remains the single source of truth for both validation and types.
+
+```ts
+import * as z from "zod";
+
+export const createUserSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  email: z.email("Enter a valid email address"),
+});
+export type CreateUser = z.infer<typeof createUserSchema>;
+```
+
+Use `validate` from `apps/server/src/middleware/validate.ts` on the route. Parsed values, including defaults and transforms, are available in `res.locals.validated`:
+
+```ts
+app.post(
+  "/api/users",
+  validate({ body: createUserSchema }),
+  (_req, res) => res.status(201).json({ user: res.locals.validated.body }),
+);
+
+app.get(
+  "/api/users/:id",
+  validate({ params: userParamsSchema, query: paginationSchema }),
+  (_req, res) => res.json(res.locals.validated),
+);
+```
+
+The middleware returns `400` with `{ error, details }` on failure. Express infers inline route handlers from the schema; for an extracted handler, use `ValidatedLocals<typeof schemas>` from the same module rather than duplicating a request type.
 
 ## Commands
 

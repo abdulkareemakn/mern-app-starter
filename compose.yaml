@@ -12,6 +12,7 @@ services:
       APP_URL: ${APP_URL:-http://localhost:3000}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set BETTER_AUTH_SECRET in the root .env}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
       TRUST_PROXY: ${TRUST_PROXY:-}
     depends_on:
       mongo:

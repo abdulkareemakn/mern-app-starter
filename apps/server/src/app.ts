@@ -3,11 +3,11 @@ import type { ApiError, HealthResponse, MeResponse } from "@mern/shared";
 import { toNodeHandler } from "better-auth/node";
 import express, { type ErrorRequestHandler } from "express";
 import mongoose from "mongoose";
-import * as z from "zod";
 import type { createAuth } from "./auth.ts";
 import type { Config } from "./config.ts";
 import { authMiddleware } from "./middleware/auth.ts";
-import { createUserSchema } from "./schemas/create-user.ts";
+import { validate } from "./middleware/validate.ts";
+import { type CreateUser, createUserSchema } from "./schemas/create-user.ts";
 
 export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   const app = express();
@@ -36,17 +36,14 @@ export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
     res.json({ user: { id, name, email } } satisfies MeResponse);
   });
 
-  app.post("/api/example/users", (req, res) => {
-    const result = createUserSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({
-        error: "Invalid request body",
-        details: z.flattenError(result.error),
-      });
-      return;
-    }
-    res.status(201).json({ user: result.data });
-  });
+  app.post(
+    "/api/example/users",
+    validate({ body: createUserSchema }),
+    (_req, res) => {
+      const user: CreateUser = res.locals.validated.body;
+      res.status(201).json({ user });
+    },
+  );
 
   app.use("/api", (_req, res) => {
     res.status(404).json({ error: "API route not found" } satisfies ApiError);

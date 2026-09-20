@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "email dev --dir ."
+    "dev": "email dev --dir . --port ${PORT:-3000}"
   },
   "devDependencies": {
     "@react-email/ui": "6.9.5"

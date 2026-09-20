@@ -7,9 +7,10 @@ export function readConfig(env: NodeJS.ProcessEnv) {
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error("PORT must be an integer between 1 and 65535");
   }
-  const mongodbUri = env.MONGODB_URI;
+  const mongodbKey = nodeEnv === "test" ? "TEST_MONGODB_URI" : "MONGODB_URI";
+  const mongodbUri = env[mongodbKey];
   if (!mongodbUri || !/^mongodb(?:\+srv)?:\/\//.test(mongodbUri)) {
-    throw new Error("MONGODB_URI must be a MongoDB connection URL");
+    throw new Error(`${mongodbKey} must be a MongoDB connection URL`);
   }
   const secret = env.BETTER_AUTH_SECRET;
   if (!secret || secret.trim().length < 32) {
