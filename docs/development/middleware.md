@@ -1,0 +1,72 @@
+---
+title: Middleware
+description: Protect Express routes with Better Auth sessions and admin roles.
+---
+
+# Middleware
+
+The server keeps reusable route guards in `apps/server/src/middleware/`:
+
+- `auth.ts` exports `authMiddleware(auth)`. It reads the Better Auth session,
+  returns `401` for signed-out requests, and stores authenticated session data in
+  `res.locals.session`.
+- `admin.ts` exports `adminMiddleware`. It returns `403` unless the authenticated
+  user has Better Auth's `admin` role.
+
+## Better Auth admin plugin
+
+`apps/server/src/auth.ts` registers the admin plugin:
+
+```ts
+import { admin } from "better-auth/plugins";
+
+export function createAuth(config: Config) {
+  return betterAuth({
+    // Existing configuration...
+    plugins: [admin()],
+  });
+}
+```
+
+The plugin adds the `role` field used by `adminMiddleware`. New users receive the
+default `user` role; promote users with the admin plugin's `setRole` API. The first
+admin must be bootstrapped deliberately, for example with the plugin's
+`adminUserIds` option, before role-management endpoints can be used.
+
+## Protect a route
+
+Pass the configured auth instance to `authMiddleware`:
+
+```ts
+app.get("/api/me", authMiddleware(auth), (_req, res) => {
+  const { user } = res.locals.session;
+  res.json({ user });
+});
+```
+
+The middleware reads cookies from the request headers and makes the validated
+session available to every handler that follows it.
+
+## Require an admin
+
+Place `adminMiddleware` after `authMiddleware`:
+
+```ts
+app.delete(
+  "/api/admin/users/:id",
+  authMiddleware(auth),
+  adminMiddleware,
+  async (req, res) => {
+    // Delete the user and return a response.
+  },
+);
+```
+
+Order matters: `adminMiddleware` expects `authMiddleware` to have populated
+`res.locals.session`. A signed-out request receives `401`; an authenticated
+non-admin receives `403`.
+
+## Verify
+
+Run `pnpm typecheck` and `pnpm test:integration`. When adding an admin route, test
+it signed out, as a regular user, and as an admin.

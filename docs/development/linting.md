@@ -1,0 +1,98 @@
+---
+title: Linting
+description: How the workspace checks code with Biome and how to customize its rules.
+---
+
+# Linting
+
+The repository uses Biome's linter instead of ESLint. Linting is enabled in the root
+[`biome.json`](https://github.com/abdulkareemakn/mern-app-starter/blob/main/biome.json)
+and applies across the workspace.
+
+## Run the linter
+
+```sh
+pnpm check
+```
+
+This runs:
+
+```sh
+biome check .
+```
+
+The command checks formatting and lint rules together, so a failure may be a style
+problem, a correctness problem, or both. To apply the fixes Biome can safely make:
+
+```sh
+pnpm format
+```
+
+1. **Make your change.** Edit the package or app normally.
+2. **Apply safe fixes.** Run `pnpm format` from the repository root.
+3. **Review the result.** Run `pnpm check` and inspect any remaining diagnostics.
+
+## What is enabled
+
+The current linter configuration is:
+
+```json
+{
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
+}
+```
+
+`recommended: true` enables Biome's recommended rules. Import organization is also
+enabled as a safe source action, which is why `pnpm format` may reorder imports.
+
+The same configuration enables Tailwind-aware parsing for CSS:
+
+```json
+{
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  }
+}
+```
+
+## Customize rules
+
+Add rule changes to the root `biome.json`. For example, to disable a recommended
+rule for the whole workspace:
+
+```json
+{
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "off"
+      }
+    }
+  }
+}
+```
+
+Prefer fixing the code when the rule catches a real bug. If a rule does not fit this
+repository, document why beside the override so the exception remains intentional.
+
+!!! warning "Keep one source of truth"
+
+    Do not add an ESLint or package-local Biome config for a one-off warning. Change the
+    root configuration first; add an override only when a package has a real, lasting
+    difference.

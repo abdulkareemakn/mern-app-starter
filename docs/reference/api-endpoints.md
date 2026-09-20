@@ -1,0 +1,36 @@
+---
+title: API endpoints
+description: The starter's HTTP surface — health, the session-protected user route, and Better Auth's endpoints.
+---
+
+# API endpoints
+
+TODO: Introduce the page — these are the routes the template ships; add your own as the
+project grows.
+
+## Health
+
+TODO: Document `GET /api/health`: returns 200 with `{ status: "ok" }` when MongoDB is
+ready and 503 with `{ status: "unavailable" }` otherwise. Mention the contract type
+`HealthResponse`.
+
+## Current user
+
+TODO: Document `GET /api/me`: requires a session, returns
+`{ user: { id, name, email } }`, and returns 401 with an `ApiError` body otherwise.
+
+## Authentication routes
+
+TODO: Document that Better Auth handles everything under `/api/auth/*`, and that the
+handler runs before `express.json()` because it needs the untouched request body.
+
+## Unknown API paths
+
+TODO: Document that any unmatched `/api` path returns 404 with an `ApiError` body rather
+than falling through to the SPA fallback.
+
+## Errors
+
+TODO: Document the error middleware: 413 for oversized bodies, 400 for malformed JSON,
+500 otherwise, and that internal errors are logged without request bodies, cookies, or
+database URLs.

@@ -1,0 +1,10 @@
+The workspace reads configuration from a single `.env` file at the repository root.
+Copy the example and generate the authentication secret:
+
+```sh
+cp .env.example .env
+openssl rand -base64 32
+```
+
+Paste the generated value into `BETTER_AUTH_SECRET`. Keep `.env` private — it is already
+ignored by git. Every setting is documented inside `.env.example`.
