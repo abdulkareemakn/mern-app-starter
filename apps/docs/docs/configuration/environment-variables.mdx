@@ -14,13 +14,15 @@ excludes environment files.
 
 ## Application settings
 
-TODO: Document `NODE_ENV`, `PORT`, and `MONGODB_URI`. Note that `PORT` defaults to 3001
-and that the server exits if it cannot connect to MongoDB.
+TODO: Document `NODE_ENV`, `PORT`, `API_PORT`, and `MONGODB_URI`. `PORT` defaults to 3001
+for Express; Portless sets it when starting the app. `API_PORT` defaults to 3001 and tells
+Vite where the internal Express server is. The server exits if it cannot connect to MongoDB.
 
 <TypeTable
   type={{
     NODE_ENV: { type: '"development" | "test" | "production"', default: "development", description: "Runtime mode." },
     PORT: { type: "number", default: "3001", description: "Port the Express server listens on." },
+    API_PORT: { type: "number", default: "3001", description: "Internal Express port used by Vite's development proxy." },
     MONGODB_URI: { type: "string", description: "MongoDB connection URL." },
   }}
 />

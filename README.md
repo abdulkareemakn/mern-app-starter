@@ -19,7 +19,7 @@ pnpm db:up
 pnpm dev
 ```
 
-Open **http://localhost:3000**. Create an account, then use **Test protected API** to verify the complete flow. Express runs on port 3001. Vite proxies `/api` to Express so cookies work on one browser origin. Use `localhost` consistently; `127.0.0.1` is a different origin. `pnpm dev` also starts the documentation site at **http://localhost:4321**; see `apps/docs/README.md` for how its content is organized.
+Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client, API, and docs at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin. The docs site is at **https://docs.mern.localhost**; see `apps/docs/README.md` for how its content is organized.
 
 Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app connects before accepting requests and exits if startup fails.
 
@@ -52,7 +52,7 @@ Run these at the repository root:
 
 | Command | Purpose |
 | --- | --- |
-| `pnpm dev` | Watch client and server together |
+| `pnpm dev` | Start client, API, and docs through Portless |
 | `pnpm build` | Build the client and compile the server |
 | `pnpm typecheck` | Generate route types and check all packages |
 | `pnpm check` | Check formatting and lint rules |

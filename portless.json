@@ -1,0 +1,7 @@
+{
+  "apps": {
+    "apps/client": { "name": "mern", "appPort": 3000 },
+    "apps/server": { "name": "api.mern", "appPort": 3001 },
+    "apps/docs": { "name": "docs.mern", "appPort": 4321 }
+  }
+}
