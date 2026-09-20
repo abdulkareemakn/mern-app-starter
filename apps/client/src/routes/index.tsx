@@ -1,6 +1,17 @@
 import type { MeResponse } from "@mern/shared";
 import { createFileRoute } from "@tanstack/react-router";
 import { type FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { authClient } from "../lib/auth-client";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -67,86 +78,118 @@ function Home() {
   }
 
   return (
-    <main className="mx-auto max-w-lg space-y-6 p-8">
-      <header>
-        <h1 className="text-3xl font-bold">MERN starter</h1>
-        <p className="mt-2 text-slate-600">
-          React · Express · MongoDB · TypeScript
-        </p>
-      </header>
-      {isPending ? (
-        <p>Loading session…</p>
-      ) : sessionError ? (
-        <p role="alert">
-          Cannot load your session. Check that the server is running, then
-          reload.
-        </p>
-      ) : session ? (
-        <section className="space-y-4">
-          <h2 className="text-xl">Welcome, {session.user.name}</h2>
-          <p>{session.user.email}</p>
-          <div className="flex gap-3">
-            <button type="button" disabled={busy} onClick={checkApi}>
-              Test protected API
-            </button>
-            <button type="button" disabled={busy} onClick={signOut}>
-              Sign out
-            </button>
-          </div>
-        </section>
-      ) : (
-        <section className="space-y-4">
-          <h2 className="text-xl">
-            {signUp ? "Create an account" : "Sign in"}
-          </h2>
-          <form className="space-y-4" onSubmit={submit}>
-            {signUp && (
-              <label className="block">
-                Name
-                <input
-                  name="name"
-                  autoComplete="name"
-                  required
-                  maxLength={100}
-                />
-              </label>
-            )}
-            <label className="block">
-              Email
-              <input name="email" type="email" autoComplete="email" required />
-            </label>
-            <label className="block">
-              Password
-              <input
-                name="password"
-                type="password"
-                autoComplete={signUp ? "new-password" : "current-password"}
-                minLength={8}
-                maxLength={128}
-                required
-              />
-            </label>
-            <button type="submit" disabled={busy}>
-              {busy ? "Please wait…" : signUp ? "Create account" : "Sign in"}
-            </button>
-          </form>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => {
-              setSignUp(!signUp);
-              setMessage("");
-            }}
+    <main className="mx-auto max-w-lg px-4 py-12 sm:py-20">
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h1 className="text-2xl">MERN starter</h1>
+          </CardTitle>
+          <CardDescription>
+            React · Express · MongoDB · TypeScript
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isPending ? (
+            <p>Loading session…</p>
+          ) : sessionError ? (
+            <p role="alert" className="text-destructive">
+              Cannot load your session. Check that the server is running, then
+              reload.
+            </p>
+          ) : session ? (
+            <section className="space-y-4">
+              <h2 className="text-xl font-medium">
+                Welcome, {session.user.name}
+              </h2>
+              <p className="text-muted-foreground">{session.user.email}</p>
+              <div className="flex flex-wrap gap-3">
+                <Button type="button" disabled={busy} onClick={checkApi}>
+                  Test protected API
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={signOut}
+                >
+                  Sign out
+                </Button>
+              </div>
+            </section>
+          ) : (
+            <section className="space-y-6">
+              <h2 className="text-xl font-medium">
+                {signUp ? "Create an account" : "Sign in"}
+              </h2>
+              <form className="space-y-4" onSubmit={submit}>
+                {signUp && (
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      autoComplete="name"
+                      required
+                      maxLength={100}
+                    />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete={signUp ? "new-password" : "current-password"}
+                    minLength={8}
+                    maxLength={128}
+                    required
+                  />
+                </div>
+                <Button className="w-full" type="submit" disabled={busy}>
+                  {busy
+                    ? "Please wait…"
+                    : signUp
+                      ? "Create account"
+                      : "Sign in"}
+                </Button>
+              </form>
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto whitespace-normal px-0"
+                disabled={busy}
+                onClick={() => {
+                  setSignUp(!signUp);
+                  setMessage("");
+                }}
+              >
+                {signUp
+                  ? "Already registered? Sign in"
+                  : "Need an account? Sign up"}
+              </Button>
+            </section>
+          )}
+        </CardContent>
+        <CardFooter>
+          <output
+            className="block min-h-5 text-sm text-muted-foreground"
+            aria-live="polite"
           >
-            {signUp
-              ? "Already registered? Sign in"
-              : "Need an account? Sign up"}
-          </button>
-        </section>
-      )}
-      <output className="block" aria-live="polite">
-        {message}
-      </output>
+            {message}
+          </output>
+        </CardFooter>
+      </Card>
     </main>
   );
 }

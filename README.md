@@ -1,6 +1,6 @@
 # MERN course starter
 
-A pnpm workspace with React, Vite, TanStack Router, Express 5, TypeScript, Mongoose, and Better Auth. Tailwind CSS is available; Biome handles formatting and linting from the root.
+A pnpm workspace with React, Vite, TanStack Router, Express 5, TypeScript, Mongoose, and Better Auth. The frontend includes shadcn/ui with Base UI and Tailwind CSS; Biome handles formatting and linting from the root.
 
 ## Start developing
 
@@ -54,6 +54,7 @@ Run these at the repository root:
 | `pnpm dev` | Start client and API through Portless |
 | `pnpm build` | Build the client and compile the server |
 | `pnpm typecheck` | Generate route types and check all packages |
+| `pnpm ui add <component>` | Add a shadcn Base UI component to the client |
 | `pnpm check` | Check formatting and lint rules |
 | `pnpm format` | Apply formatting and safe lint fixes |
 | `pnpm test` | Check configuration validation without MongoDB |
@@ -65,6 +66,12 @@ Run these at the repository root:
 The integration check creates and deletes its own randomly named `mern_test_*` database. Its MongoDB user needs permission to create and drop that test database. It never drops your application's database.
 
 For a production build outside Docker, run `pnpm build`, set `NODE_ENV=production` and both public URLs in `.env`, then `pnpm start`. Express serves the client build in production, including SPA route fallback. Your public URL must point to Express (port 3001 by default) or a reverse proxy in front of it.
+
+## Frontend components
+
+The auth page uses the included shadcn Button, Input, Label, and Card components. Run `pnpm ui add dialog` from the root to add another component; `pnpm ui info` shows the active Base UI configuration. This template is already initialized.
+
+See the [shadcn/ui guide](docs/content/docs/guides/shadcn-ui.mdx) in the documentation site's Guides section for CLI previews, `components.json`, customization, themes, Base UI composition, and upgrades.
 
 ## Two Docker workflows
 
