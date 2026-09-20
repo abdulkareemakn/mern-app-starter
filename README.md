@@ -31,6 +31,7 @@ Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app 
 apps/
   client/src/
     routes/           # TanStack Router file routes
+    pages/404.tsx     # 404 page for URLs that match no route
     lib/auth-client.ts
   server/src/
     index.ts          # Startup, database connection, graceful shutdown
@@ -94,13 +95,26 @@ Run these at the repository root:
 | `pnpm ui add <component>` | Add a shadcn Base UI component to the client |
 | `pnpm check` | Check formatting and lint rules |
 | `pnpm format` | Apply formatting and safe lint fixes |
-| `pnpm test` | Check configuration validation without MongoDB |
-| `pnpm test:integration` | Check sign-up, sign-in, sessions, sign-out, and origin protection against MongoDB |
+| `pnpm test` | Run unit and API integration tests |
+| `pnpm test:unit` | Run fast Vitest unit tests |
+| `pnpm test:integration` | Run Vitest + Supertest API tests |
+| `pnpm test:e2e` | Run the Playwright user workflow in Chromium |
+| `pnpm test:e2e:ui` | Open Playwright's interactive UI |
 | `pnpm db:up` / `pnpm db:down` | Start/stop local MongoDB |
 | `pnpm docker:up` / `pnpm docker:down` | Build/start or stop the complete stack |
 | `pnpm start` | Run the compiled server |
 
-The integration check creates and deletes its own randomly named `mern_test_*` database. Its MongoDB user needs permission to create and drop that test database. It never drops your application's database.
+## Testing
+
+Tests are split by cost and purpose:
+
+- **Unit** (`apps/server/test/unit/`) uses Vitest for isolated configuration and Zod schema behavior.
+- **API integration** (`apps/server/test/integration/`) uses Vitest and Supertest to send requests through Express, middleware, Better Auth, and MongoDB without starting an HTTP listener.
+- **E2E** (`e2e/`) uses Playwright to drive the real React → Express → MongoDB sign-up, protected API, and sign-out workflow, plus the 404 page served for unknown client URLs.
+
+Start the local MongoDB container with `pnpm db:up`, then set `TEST_MONGODB_URI=mongodb://127.0.0.1:27017` in `.env` before running integration or E2E tests. Test mode requires this variable and never falls back to `MONGODB_URI`. Each persistence test run creates and deletes a randomly named `mern_test_*` or `mern_e2e_*` database; the configured MongoDB user therefore needs permission to create and drop databases.
+
+Install Playwright's supported browser once with `pnpm exec playwright install chromium`. Use unit tests for pure logic, API integration tests when backend pieces must work together, and Playwright only for complete user workflows. Run the cheapest relevant layer while iterating and broader suites before finishing significant changes.
 
 For a production build outside Docker, run `pnpm build`, set `NODE_ENV=production` and both public URLs in `.env`, then `pnpm start`. Express serves the client build in production, including SPA route fallback. Your public URL must point to Express (port 3001 by default) or a reverse proxy in front of it.
 

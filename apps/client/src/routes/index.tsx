@@ -70,6 +70,7 @@ function Home() {
     try {
       const result = await authClient.signOut();
       if (result.error) setMessage(result.error.message ?? "Sign out failed.");
+      else setSignUp(false);
     } catch {
       setMessage("Unable to sign out. Please try again.");
     } finally {
