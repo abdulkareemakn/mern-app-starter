@@ -1,4 +1,5 @@
 import { beforeEach, expect, test, vi } from "vitest";
+import type { Config } from "../../src/config.ts";
 
 const { createTransport, sendMail } = vi.hoisted(() => ({
   createTransport: vi.fn(),
@@ -12,6 +13,7 @@ vi.mock("nodemailer", () => ({
 }));
 
 const { sendEmail } = await import("../../src/lib/email-client.ts");
+const config = { nodeEnv: "development" } as Config;
 
 beforeEach(() => vi.clearAllMocks());
 
@@ -23,7 +25,7 @@ test("sends non-production email to the local SMTP inbox", async () => {
     html: "<p>Welcome</p>",
   };
 
-  await sendEmail(email);
+  await sendEmail(email, config);
 
   expect(createTransport).toHaveBeenCalledWith({
     host: "127.0.0.1",

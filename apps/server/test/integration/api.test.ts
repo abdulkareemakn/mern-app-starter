@@ -14,6 +14,7 @@ const config = {
   secret: "unused",
   appUrl: "http://localhost:3000",
   authUrl: "http://localhost:3000",
+  resendApiKey: undefined,
   trustProxy: [],
 } satisfies Config;
 const app = createApp(auth, config);

@@ -25,6 +25,8 @@ Local email is captured automatically by MailDev. Open **https://mail.localhost*
 
 Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app connects before accepting requests and exits if startup fails.
 
+Node 24 loads the root `.env` at the server startup boundary. `readConfig(process.env)` then uses Zod to validate and transform raw strings into typed configuration; invalid settings name the affected variable and stop startup. Application modules receive that validated config instead of reading `process.env`. Production does not require an environment file: a host or container can inject the same variables directly.
+
 ## Layout
 
 ```text
@@ -116,7 +118,7 @@ Start the local MongoDB container with `pnpm db:up`, then set `TEST_MONGODB_URI=
 
 Install Playwright's supported browser once with `pnpm exec playwright install chromium`. Use unit tests for pure logic, API integration tests when backend pieces must work together, and Playwright only for complete user workflows. Run the cheapest relevant layer while iterating and broader suites before finishing significant changes.
 
-For a production build outside Docker, run `pnpm build`, set `NODE_ENV=production` and both public URLs in `.env`, then `pnpm start`. Express serves the client build in production, including SPA route fallback. Your public URL must point to Express (port 3001 by default) or a reverse proxy in front of it.
+For a production build outside Docker, run `pnpm build`, set `NODE_ENV=production`, `MONGODB_URI`, both public URLs, `BETTER_AUTH_SECRET`, and `RESEND_API_KEY` in `.env` or the host environment, then `pnpm start`. Express serves the client build in production, including SPA route fallback. Your public URL must point to Express (port 3001 by default) or a reverse proxy in front of it.
 
 ## Frontend components
 
