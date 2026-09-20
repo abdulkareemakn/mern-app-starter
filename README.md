@@ -35,6 +35,7 @@ apps/
     config.ts         # Environment validation
     auth.ts           # Better Auth + MongoDB adapter
     app.ts            # Express middleware and API routes
+    middleware/auth.ts # Reusable session guard
 packages/shared/src/
   index.ts            # Browser-safe API response types
 ```
@@ -44,6 +45,8 @@ Add Express routes in `app.ts`; extract a feature router when a feature grows. A
 Mongoose runs **only on the server**. Import shared contracts with `import type { ... } from "@mern/shared"`. They describe JSON responses, not database documents, and don't replace runtime validation of incoming request bodies. The shared package needs no build because its exports contain types only.
 
 The starter endpoints are `GET /api/health`, `GET /api/me` (requires a session), and Better Auth's `/api/auth/*` routes. Keep the auth handler before `express.json()`. Express 5 forwards rejected async route handlers to the error middleware automatically. Protect every private endpoint on the server even if the UI also hides it.
+
+Use `authMiddleware(auth)` before a private route's handler. It returns `401` when no session exists and exposes the validated session as `res.locals.session`. Add future route-specific middleware beside `middleware/auth.ts` and place it after `authMiddleware` when it needs the authenticated user.
 
 ## Commands
 

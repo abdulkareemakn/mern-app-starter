@@ -1,6 +1,5 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { admin } from "better-auth/plugins";
 import mongoose from "mongoose";
 import type { Config } from "./config.ts";
 
@@ -22,6 +21,5 @@ export function createAuth(config: Config) {
       maxPasswordLength: 128,
     },
     rateLimit: { enabled: true, storage: "database" },
-    plugins: [admin()],
   });
 }

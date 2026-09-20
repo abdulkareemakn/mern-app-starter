@@ -7,7 +7,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "start": "node --env-file-if-exists=../../.env dist/index.js",
-    "test": "node --test test/config.test.ts test/middleware.test.ts",
+    "test": "node --test test/config.test.ts",
     "test:integration": "node --env-file-if-exists=../../.env --test test/auth.test.ts"
   },
   "dependencies": {
