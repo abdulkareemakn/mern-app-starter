@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -33,9 +33,9 @@ export function NotFoundPage() {
           </p>
         </CardContent>
         <CardFooter className="justify-center">
-          <Button nativeButton={false} render={<Link to="/" />}>
+          <Link className={buttonVariants()} to="/">
             Go home
-          </Button>
+          </Link>
         </CardFooter>
       </Card>
     </main>
