@@ -5,11 +5,11 @@ description: Every script in the root package.json, what it runs, and when to us
 
 # Commands
 
-TODO: Introduce the page. All commands run from the repository root.
+All commands run from the repository root unless noted.
 
 ## Root scripts
 
-TODO: Keep this table in sync with the root `package.json`.
+These are the root scripts currently provided by `package.json`.
 
 | Command | Purpose |
 | --- | --- |
@@ -19,14 +19,17 @@ TODO: Keep this table in sync with the root `package.json`.
 | `pnpm typecheck` | Generate route types and check all packages |
 | `pnpm check` | Check formatting and lint rules |
 | `pnpm format` | Apply formatting and safe lint fixes |
-| `pnpm test` | Check configuration validation without MongoDB |
-| `pnpm test:integration` | Check auth flows against MongoDB |
+| `pnpm test` | Run unit tests followed by API integration tests |
+| `pnpm test:unit` | Run all tests in `tests/unit/` |
+| `pnpm test:integration` | Run all tests in `tests/integration/` |
+| `pnpm test:e2e` | Run Playwright tests in Chromium |
+| `pnpm test:e2e:ui` | Open Playwright's interactive test UI |
 | `pnpm db:up` / `pnpm db:down` | Start or stop local MongoDB |
 | `pnpm docker:up` / `pnpm docker:down` | Build/start or stop the complete stack |
 
 ## Per-package scripts
 
-TODO: Document the package-level commands:
+Package-level commands are useful when working on one workspace:
 
 ```sh
 pnpm --filter @mern/client generate-routes
@@ -34,6 +37,6 @@ pnpm --filter @mern/client generate-routes
 
 ## Test databases
 
-TODO: Explain again that the integration check creates and deletes its own randomly
-named `mern_test_*` database, needs permission to create and drop it, and never drops
-the application database.
+Integration tests create and delete a random `mern_test_*` database. E2E tests use a
+random `mern_e2e_*` database. Both need permission to create and drop temporary
+databases and never use the application database.

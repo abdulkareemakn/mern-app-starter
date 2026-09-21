@@ -5,32 +5,31 @@ description: The starter's HTTP surface, including health, the session-protected
 
 # API endpoints
 
-TODO: Introduce the page. These are the routes the template ships; add your own as the
-project grows.
+These are the routes the template ships. Add feature routes alongside the existing
+server route modules and keep their request/response contracts documented here.
 
 ## Health
 
-TODO: Document `GET /api/health`: returns 200 with `{ status: "ok" }` when MongoDB is
-ready and 503 with `{ status: "unavailable" }` otherwise. Mention the contract type
-`HealthResponse`.
+`GET /api/health` returns `200 { status: "ok" }` when MongoDB is ready and `503 { status:
+"unavailable" }` otherwise. The shared `HealthResponse` type is the client contract.
 
 ## Current user
 
-TODO: Document `GET /api/me`: requires a session, returns
-`{ user: { id, name, email } }`, and returns 401 with an `ApiError` body otherwise.
+`GET /api/me` requires a session and returns `{ user: { id, name, email } }`. Without a
+valid session it returns `401` with the standard `ApiError` body.
 
 ## Authentication routes
 
-TODO: Document that Better Auth handles everything under `/api/auth/*`, and that the
-handler runs before `express.json()` because it needs the untouched request body.
+Better Auth handles everything under `/api/auth/*`. Its handler is mounted before
+`express.json()` because it needs the untouched request body.
 
 ## Unknown API paths
 
-TODO: Document that any unmatched `/api` path returns 404 with an `ApiError` body rather
-than falling through to the SPA fallback.
+An unmatched `/api` path returns `404` with an `ApiError` body; it does not fall through
+to the SPA fallback.
 
 ## Errors
 
-TODO: Document the error middleware: 413 for oversized bodies, 400 for malformed JSON,
-500 otherwise, and that internal errors are logged without request bodies, cookies, or
-database URLs.
+The error middleware returns `413` for oversized bodies, `400` for malformed JSON, and
+`500` for unexpected failures. Internal logs omit request bodies, cookies, and database
+URLs.

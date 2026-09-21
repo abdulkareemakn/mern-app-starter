@@ -27,7 +27,7 @@ BETTER_AUTH_SECRET=
 apps/server/src/
   auth.ts           # Better Auth server instance + plugin config
   middleware/
-    auth.ts         # Express middleware: authMiddleware, adminMiddleware
+    auth.ts         # Express middleware: authMiddleware
   routes/
     auth.ts         # Mounts Better Auth handler at /api/auth/*
 
@@ -92,21 +92,17 @@ function Profile() {
 
 ## Authentication middleware
 
-Protect Express routes with `authMiddleware` (and optionally `adminMiddleware`):
+Protect Express routes with `authMiddleware`:
 
 ```ts
 // apps/server/src/routes/user.ts
-import { authMiddleware, adminMiddleware } from "../middleware/auth";
+import { authMiddleware } from "../middleware/auth";
 import { auth } from "../auth";
 
 app.get("/api/me", authMiddleware(auth), (_req, res) => {
   res.json({ user: res.locals.session.user });
 });
 
-app.delete("/api/admin/users/:id", authMiddleware(auth), adminMiddleware, (_req, res) => {
-  // Only users with Better Auth's `admin` role reach here
-  res.json({ ok: true });
-});
 ```
 
 - `authMiddleware(auth)` reads cookies, returns `401` if no valid session, and attaches `res.locals.session`.

@@ -5,8 +5,7 @@ description: The application pieces in the starter, from Better Auth and MongoDB
 
 # Build your app
 
-Each page covers one application concern. Start with the concern you are adding; the
-pages link to the adjacent pieces when a change crosses a boundary.
+Each page covers one application concern. Establish the visual system first, then add the concern you need; pages link to adjacent pieces when a change crosses a boundary.
 
 <div class="grid cards" markdown>
 
@@ -34,6 +33,15 @@ pages link to the adjacent pieces when a change crosses a boundary.
 - [__shadcn/ui__](/build/shadcn-ui)
 
     Add and customize UI components.
+- [__Design system__](/build/design-system)
+
+    Make a few visual choices and derive a coherent `DESIGN.md`.
+- [__Fonts__](/build/fonts)
+
+    Self-host Fontsource or licensed local font files.
+- [__Agent skills__](/build/agent-skills)
+
+    Understand the project-local guidance used by coding agents.
 - [__Environment variables__](/build/environment-variables)
 
     Configure the server without exposing secrets.

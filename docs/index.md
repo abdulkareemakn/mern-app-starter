@@ -21,7 +21,10 @@ MongoDB-backed sessions.
 
 - [__Build your app__](/build)
 
-    Authentication, data, routes, UI, validation, email, and configuration.
+    Design system, authentication, data, routes, UI, validation, email, and configuration.
+- [__Deployment__](/deployment)
+
+    Deno Deploy with MongoDB Atlas, Docker Compose, and production builds.
 - [__Code quality__](/quality)
 
     Formatting, linting, and tests for the whole workspace.

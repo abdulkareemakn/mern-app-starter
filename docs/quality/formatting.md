@@ -93,5 +93,3 @@ After changing a global rule, run `pnpm format`, review the full diff, and commi
 
 - [Biome formatter](https://biomejs.dev/formatter/)
 - [Biome configuration](https://biomejs.dev/reference/configuration/)
-- [Linting](/quality/linting)
-- [Testing](/quality/testing)

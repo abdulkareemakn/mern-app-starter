@@ -25,11 +25,21 @@ Set the application connection URL in the root `.env`:
 MONGODB_URI=mongodb://127.0.0.1:27017/mern
 ```
 
-Start the included development database:
+For a hosted environment, use a managed URI such as MongoDB Atlas (`mongodb+srv://...`).
+Follow the [Atlas deployment guide](../deployment/mongodb-atlas.md) for database users,
+network access, backups, and production separation.
 
-```sh
-pnpm db:up
-```
+Start MongoDB locally:
+
+=== "Windows"
+
+    The Community Server installer runs it as the `MongoDB` service.
+
+=== "macOS / Linux"
+
+    ```sh
+    pnpm db:up
+    ```
 
 The server connects before accepting requests. Startup fails if MongoDB is unavailable, and graceful shutdown closes the connection.
 
@@ -125,7 +135,6 @@ The configured MongoDB user must be allowed to create and drop those temporary d
 ## Verify
 
 ```sh
-pnpm db:up
 pnpm test:integration
 pnpm typecheck
 ```

@@ -99,5 +99,3 @@ Run the root `pnpm check` before finishing so unrelated workspace configuration 
 - [Biome linter](https://biomejs.dev/linter/)
 - [Biome recommended rules](https://biomejs.dev/linter/rules/)
 - [Biome assists](https://biomejs.dev/assist/)
-- [Formatting](/quality/formatting)
-- [Testing](/quality/testing)

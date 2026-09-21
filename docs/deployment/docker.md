@@ -17,6 +17,8 @@ From the repository root:
 docker build -t mern-template .
 ```
 
+Every push to the application repository also runs `.github/workflows/docker.yaml`. GitHub Actions builds the image with Buildx, tags it with the commit SHA, and caches layers; it does not publish to a registry or need runtime secrets. Add registry login and `push: true` only when you have chosen a registry and secret policy.
+
 The image contains the compiled server and `apps/client/dist`. It expects a reachable
 MongoDB instance plus the production settings from [Production build](/deployment/production-build).
 
@@ -60,5 +62,7 @@ It runs MongoDB 8.0 with a health check and exposes port 27017 only on loopback.
 ## What the template does not do
 
 This is a single-host reference. It does not provision DNS, TLS, backups, or a managed
-database. Put the app behind your provider's HTTPS ingress or reverse proxy, keep
-MongoDB private, back up its volume, and inject secrets through the deployment platform.
+database. For production, use [MongoDB Atlas](mongodb-atlas.md) instead of the Compose
+database when you need managed backups and availability: set `MONGODB_URI` to the Atlas
+SRV URI and do not expose a local MongoDB port. Put the app behind your provider's HTTPS
+ingress or reverse proxy and inject secrets through the deployment platform.

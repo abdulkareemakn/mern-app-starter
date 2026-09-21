@@ -25,7 +25,10 @@ nav = [
     "build/client-pages.md",
     "build/middleware.md",
     "build/emails.md",
+    "build/design-system.md",
     "build/shadcn-ui.md",
+    "build/fonts.md",
+    "build/agent-skills.md",
     "build/environment-variables.md",
     "build/not-found-page.md",
   ] },
@@ -34,22 +37,20 @@ nav = [
     "quality/formatting.md",
     "quality/linting.md",
     "quality/testing.md",
+    "quality/documentation.md",
   ] },
   { "Deployment" = [
     "deployment/index.md",
+    "deployment/production.md",
     "deployment/production-build.md",
     "deployment/docker.md",
+    "deployment/mongodb-atlas.md",
   ] },
   { "Reference" = [
     "reference/index.md",
     "reference/commands.md",
     "reference/api-endpoints.md",
     "reference/security-checklist.md",
-  ] },
-  { "Contributing" = [
-    "contributing/index.md",
-    "contributing/conventions.md",
-    "contributing/template-maintenance.md",
   ] },
 ]
 

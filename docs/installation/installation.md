@@ -7,7 +7,7 @@ description: Install dependencies, generate the Better Auth secret, start MongoD
 
 After this page, the client is available at
 [https://mern.localhost](https://mern.localhost), the API is proxied through it,
-and MongoDB is running in Docker.
+and MongoDB is running locally.
 
 ## Install dependencies
 
@@ -28,13 +28,25 @@ step below.
 
 ## Start MongoDB
 
-```sh
-pnpm db:up
-```
+=== "Windows"
 
-This runs `compose.db.yaml`, stores data in the `mongo-data` Docker volume, and
-publishes MongoDB on `127.0.0.1:27017`. Stop it with `pnpm db:down` when you are
-finished.
+    The MongoDB Community Server installer starts the `MongoDB` Windows service. No
+    Docker command is needed. If it has been stopped, start it from **Services** or
+    run PowerShell as an administrator:
+
+    ```powershell
+    Start-Service MongoDB
+    ```
+
+=== "macOS / Linux"
+
+    ```sh
+    pnpm db:up
+    ```
+
+    This runs `compose.db.yaml`, stores data in the `mongo-data` Docker volume, and
+    publishes MongoDB on `127.0.0.1:27017`. Stop it with `pnpm db:down` when you are
+    finished.
 
 ## Run the client and server
 

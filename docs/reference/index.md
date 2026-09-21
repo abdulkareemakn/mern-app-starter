@@ -5,8 +5,8 @@ description: Look-up material for the starter, including root commands, the API 
 
 # Reference
 
-TODO: Introduce the section. These pages are for looking things up, not for reading
-straight through.
+Find a command, inspect an API response, or check a deployment before sharing it.
+For step-by-step implementation, start with [Build your app](/build/).
 
 <div class="grid cards" markdown>
 
