@@ -4,6 +4,8 @@ RUN npm install --global pnpm@11.3.0
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/client/package.json apps/client/package.json
 COPY apps/server/package.json apps/server/package.json
+COPY packages/emails/package.json packages/emails/package.json
+COPY packages/mail/package.json packages/mail/package.json
 COPY packages/shared packages/shared
 RUN pnpm install --frozen-lockfile
 COPY . .
