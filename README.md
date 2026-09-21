@@ -126,6 +126,25 @@ For a production build outside Docker, run `pnpm build`, set `NODE_ENV=productio
 
 The auth page uses the included shadcn Button, Input, Label, and Card components. Run `pnpm ui add dialog` from the root to add another component; `pnpm ui info` shows the active Base UI configuration. This template is already initialized.
 
+## Establish your design system
+
+Ask your agent: **“Use design-md to establish the design system for my [application]. It should feel [a few words]. Recommend the details.”** The project-local [design-md skill](.agents/skills/design-md/SKILL.md) guides the process. You can supply colors (including a Coolors palette), fonts, references, or a [shadcn preset](https://ui.shadcn.com/create).
+
+You choose the product's character and any preferences about color, typography, density, rounding and icons. “Recommend for me” is enough for anything you don't care about. The agent derives readable color roles, type sizes, spacing, component states and accessibility rules, then records them in a root **DESIGN.md** and implements the supported choices through shadcn and the existing CSS. Nova, Neutral and Lucide are starter defaults, not permanent requirements; Base UI remains the component foundation. An established app can be documented, evolved or replaced; a fresh starter doesn't need a visual audit.
+
+DESIGN.md is the source of truth for future interface work. To change it, ask **“Use design-md to make our design system [warmer/more compact/etc.] and keep the implementation aligned.”** The agent updates the document and implementation together and preserves customized components. Avoid applying a full preset casually: it can overwrite component code and theme values. You do not need to scaffold another app.
+
+After establishing the system:
+
+```sh
+pnpm design:lint                    # Official Google DESIGN.md validation
+pnpm ui add @shadcn/dialog          # Add components using your active configuration
+```
+
+Ask the agent to follow DESIGN.md when using new components and reconcile any generated theme changes. Validation checks tokens and declared contrast pairs; contrast warnings must be reviewed even when the command succeeds. The starter intentionally has no product DESIGN.md until you choose a direction.
+
+Use the configured shadcn icon library for interface controls. For actual brand/social identities, add `react-icons` when first needed (`pnpm --filter @mern/client add react-icons`) and use named Simple Icons imports such as `import { SiGithub } from "react-icons/si"`. Check that the requested brand exists; otherwise use its official SVG. Don't mix additional general-purpose icon sets. Brand icons beside text are decorative; icon-only controls need accessible labels.
+
 ## Two Docker workflows
 
 **Local development:** `compose.db.yaml` runs MongoDB with a named volume, exposing port 27017 only on the host's loopback address. Node and Vite run on your computer.
