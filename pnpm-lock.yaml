@@ -18,6 +18,9 @@ importers:
       '@playwright/test':
         specifier: ^1.63.0
         version: 1.63.0
+      mongoose:
+        specifier: ^9.10.1
+        version: 9.10.1(socks@2.8.10)
       portless:
         specifier: ^0.15.6
         version: 0.15.6

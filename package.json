@@ -30,6 +30,7 @@
     "@biomejs/biome": "2.4.5",
     "@google/design.md": "0.4.0",
     "@playwright/test": "^1.63.0",
+    "mongoose": "^9.10.1",
     "portless": "^0.15.6",
     "typescript": "7.0.2"
   }
