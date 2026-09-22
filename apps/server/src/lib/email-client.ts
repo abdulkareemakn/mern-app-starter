@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
-import type { Config } from "../config.ts";
+import type { Config } from "#/config";
 
 export type Email = {
   from: string;

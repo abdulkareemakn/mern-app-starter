@@ -1,7 +1,7 @@
 import type { ApiError } from "@mern/shared";
 import { fromNodeHeaders } from "better-auth/node";
 import type { RequestHandler } from "express";
-import type { createAuth } from "../auth.ts";
+import type { createAuth } from "#/auth";
 
 export type AuthenticatedLocals = {
   session: NonNullable<

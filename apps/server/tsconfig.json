@@ -5,6 +5,11 @@
     "module": "NodeNext",
     "rootDir": "src",
     "outDir": "dist",
+    "paths": {
+      "#/*": ["./src/*"],
+      "@/*": ["./src/*"]
+    },
+    "customConditions": ["development"],
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,

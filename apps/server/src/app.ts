@@ -3,11 +3,9 @@ import type { ApiError, HealthResponse, MeResponse } from "@mern/shared";
 import { toNodeHandler } from "better-auth/node";
 import express, { type ErrorRequestHandler } from "express";
 import mongoose from "mongoose";
-import type { createAuth } from "./auth.ts";
-import type { Config } from "./config.ts";
-import { authMiddleware } from "./middleware/auth.ts";
-import { validate } from "./middleware/validate.ts";
-import { type CreateUser, createUserSchema } from "./schemas/create-user.ts";
+import type { createAuth } from "#/auth";
+import type { Config } from "#/config";
+import { authMiddleware } from "#/middleware/auth";
 
 export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   const app = express();
@@ -35,15 +33,6 @@ export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
     const { id, name, email } = session.user;
     res.json({ user: { id, name, email } } satisfies MeResponse);
   });
-
-  app.post(
-    "/api/example/users",
-    validate({ body: createUserSchema }),
-    (_req, res) => {
-      const user: CreateUser = res.locals.validated.body;
-      res.status(201).json({ user });
-    },
-  );
 
   app.use("/api", (_req, res) => {
     res.status(404).json({ error: "API route not found" } satisfies ApiError);
