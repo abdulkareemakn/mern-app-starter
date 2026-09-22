@@ -1,5 +1,6 @@
 import type { MeResponse } from "@mern/shared";
 import { createFileRoute } from "@tanstack/react-router";
+import axios from "axios";
 import { type FormEvent, useState } from "react";
 import { authClient } from "#/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -53,9 +54,7 @@ function Home() {
   async function checkApi() {
     setBusy(true);
     try {
-      const response = await fetch("/api/me");
-      if (!response.ok) throw new Error("Request failed");
-      const data: MeResponse = await response.json();
+      const { data } = await axios.get<MeResponse>("/api/me");
       setMessage(`Protected API says hello to ${data.user.name}.`);
     } catch {
       setMessage("Unable to access the protected API. Try signing in again.");
