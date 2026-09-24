@@ -24,16 +24,6 @@ const config = {
 const app = createApp(auth, config);
 
 describe("API errors", () => {
-  test("serves the upload OpenAPI contract", async () => {
-    const response = await request(app).get("/api/openapi.json");
-    expect(response.status).toBe(200);
-    expect(response.body.openapi).toBe("3.1.0");
-    expect(Object.keys(response.body.paths)).toEqual([
-      "/api/uploads",
-      "/api/uploads/{id}/confirm",
-      "/api/uploads/{id}",
-    ]);
-  });
   test("returns JSON errors for unknown routes and malformed JSON", async () => {
     expect((await request(app).get("/api/missing")).body).toEqual({
       error: "API route not found",

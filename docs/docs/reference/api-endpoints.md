@@ -46,9 +46,7 @@ The upload API uses the existing `{ error }` and validation `{ error, details }`
 record, `409` for an unfinished or expired upload, `422` for mismatched object metadata,
 and `503` when storage is disabled. Unexpected provider errors return `500`.
 
-`GET /api/openapi.json` serves the OpenAPI 3.1 upload contract for use with Scalar or another
-OpenAPI viewer. Its source is `apps/server/src/openapi.json`. Follow
-[File uploads](/build/file-uploads) for the complete request sequence,
+Follow [File uploads](/build/file-uploads) for the complete request sequence,
 [Development workflow](/installation/development-workflow/#file-storage) for storage
 configuration, and [Cron jobs](/build/cron-jobs/#pending-upload-cleanup) for cleanup.
 

@@ -7,7 +7,6 @@ import type { createAuth } from "#/auth";
 import type { Config } from "#/config";
 import { authMiddleware } from "#/middleware/auth";
 import { uploadsRouter } from "#/routes/uploads";
-import openapi from "./openapi.json" with { type: "json" };
 
 export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   const app = express();
@@ -22,8 +21,6 @@ export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   // Better Auth needs the untouched request body. Keep this before express.json().
   app.all("/api/auth/{*path}", toNodeHandler(auth));
   app.use(express.json({ limit: "100kb" }));
-
-  app.get("/api/openapi.json", (_req, res) => res.json(openapi));
 
   app.get("/api/health", (_req, res) => {
     const ready = mongoose.connection.readyState === 1;

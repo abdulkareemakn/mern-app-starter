@@ -38,22 +38,6 @@ until non-developers genuinely need one.
 For this repository, keep using Zensical. It already matches the Markdown
 content, navigation, preview, and static build workflow here.
 
-## API reference
-
-Make [OpenAPI](https://spec.openapis.org/oas/latest.html) the source of truth,
-then render it with [Scalar](https://scalar.com/products/api-references/). For
-Express, Scalar has an official integration that can serve a reference from an
-`openapi.json` or `openapi.yaml` document.
-
-Keep the API reference separate from learning material:
-
-- **Guide:** explain authentication, concepts, and the first successful request.
-- **Reference:** list every operation, parameter, response, and error shape.
-- **Examples:** show copy-pasteable requests and realistic responses.
-
-Do not hand-maintain a second route table when the OpenAPI document can be
-generated or checked from the server code.
-
 ## Small-project defaults
 
 - **Hosting:** use the deployment path already documented in [Deployment](/deployment/).
@@ -67,5 +51,3 @@ generated or checked from the server code.
 - [Zensical: create your site](https://zensical.org/docs/create-your-site/)
 - [Docusaurus docs introduction](https://docusaurus.io/docs/docs-introduction)
 - [VitePress: what is VitePress?](https://vitepress.dev/guide/what-is-vitepress)
-- [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Scalar API reference](https://scalar.com/products/api-references/getting-started)

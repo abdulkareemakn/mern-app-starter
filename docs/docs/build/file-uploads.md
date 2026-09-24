@@ -126,9 +126,7 @@ check that the record belongs to the session user. Confirmation rechecks expiry
 when updating MongoDB so a slow HEAD cannot confirm a file already eligible for cleanup.
 
 The [API endpoint reference](/reference/api-endpoints/#private-uploads) lists responses
-and error codes. `GET /api/openapi.json` serves the upload OpenAPI contract from
-`apps/server/src/openapi.json`. Import it into Scalar or another OpenAPI viewer;
-the starter does not mount a Scalar UI.
+and error codes.
 
 ## Verify and troubleshoot
 

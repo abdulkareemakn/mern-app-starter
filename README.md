@@ -99,9 +99,7 @@ That page documents provider endpoints, policy defaults, credentials, and bucket
 Without storage configuration, authenticated upload requests return `503`.
 
 Follow the [File uploads guide](docs/docs/build/file-uploads.md) for the complete
-request sequence, implementation, and verification. The upload OpenAPI contract is
-served at `/api/openapi.json` from
-[`apps/server/src/openapi.json`](apps/server/src/openapi.json).
+request sequence, implementation, and verification.
 
 [Cron jobs](docs/docs/build/cron-jobs.md#pending-upload-cleanup) documents the cleanup
 CLI and hourly production scheduling. The API does not schedule cleanup automatically.
