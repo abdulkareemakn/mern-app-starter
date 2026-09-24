@@ -1,0 +1,152 @@
+[project]
+site_name = "MERN Course Starter"
+site_description = "Build and deploy the MERN course starter."
+
+# copyright = "Copyright &copy; 2026 Your name"
+
+repo_url = "https://github.com/abdulkareemakn/mern-app-starter"
+repo_name = "abdulkareemakn/mern-app-starter"
+edit_uri = "blob/main/docs/"
+
+nav = [
+  { "Home" = "index.md" },
+  { "Start here" = [
+    "installation/prerequisites.md",
+    "installation/installation.md",
+    "installation/development-workflow.md",
+    "installation/project-structure.md",
+  ] },
+  { "Design and UI" = [
+    "build/design-system.md",
+    "build/fonts.md",
+    "build/icons.md",
+    "build/shadcn-ui.md",
+  ] },
+  { "Build your app" = [
+    "build/index.md",
+    "build/database.md",
+    "build/authentication.md",
+    "build/validation.md",
+    "build/api-routes.md",
+    "build/client-pages.md",
+    "build/emails.md",
+    "build/middleware.md",
+    "build/not-found-page.md",
+  ] },
+  { "Code quality" = [
+    "quality/index.md",
+    "quality/formatting.md",
+    "quality/linting.md",
+    "quality/testing.md",
+  ] },
+  { "Deployment" = [
+    "deployment/index.md",
+    "deployment/production.md",
+    "deployment/docker.md",
+    "deployment/production-build.md",
+  ] },
+  { "Reference" = [
+    "reference/index.md",
+    "reference/commands.md",
+    "reference/api-endpoints.md",
+    "reference/tech-stack.md",
+    "reference/recommendations.md",
+    "reference/security-checklist.md",
+    "reference/skills.md",
+  ] },
+]
+
+# extra_css = ["stylesheets/extra.css"]
+# extra_javascript = ["javascripts/extra.js"]
+
+[project.theme]
+# variant = "classic"
+# custom_dir = "overrides"
+# favicon = "images/favicon.png"
+
+font.text = "Rubik"
+font.code = "Martian Mono"
+language = "en"
+features = [
+  # "content.action.edit",
+  "content.code.copy",
+  "content.tabs.link",
+  # "header.autohide",
+  # "navigation.expand",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  # "navigation.instant.progress",
+  # "navigation.prune",
+  "navigation.sections",
+  "navigation.tabs",
+  # "navigation.tabs.sticky",
+  "navigation.top",
+  # "toc.follow",
+  # "toc.integrate",
+]
+
+# logo = "assets/logo.png"
+
+# [project.theme.icon]
+# logo = "lucide/smile"
+
+# [project.theme.font]
+# text = "Inter"
+# code = "Jetbrains Mono"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+# [[project.extra.social]]
+# icon = "fontawesome/brands/github"
+# link = "https://github.com/user/repo"
+
+# [[project.extra.social]]
+# icon = "fontawesome/brands/mastodon"
+# link = "https://fosstodon.org/@user"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+pymdownx.snippets.base_path = "."
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}
