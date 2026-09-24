@@ -1,195 +1,92 @@
-import type { MeResponse } from "@mern/shared";
 import { createFileRoute } from "@tanstack/react-router";
-import axios from "axios";
-import { type FormEvent, useState } from "react";
-import { authClient } from "#/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/")({ component: Home });
 
+const layers = [
+  ["01", "Client", "React, Vite, TanStack Router, Tailwind"],
+  ["02", "Server", "Express, TypeScript, Zod validation"],
+  ["03", "Data", "MongoDB, Mongoose, shared contracts"],
+  ["04", "Delivery", "Email, Docker, tests, production build"],
+] as const;
+
 function Home() {
-  const {
-    data: session,
-    isPending,
-    error: sessionError,
-  } = authClient.useSession();
-  const [signUp, setSignUp] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const email = String(form.get("email"));
-    const password = String(form.get("password"));
-    setBusy(true);
-    setMessage("");
-    try {
-      const result = signUp
-        ? await authClient.signUp.email({
-            email,
-            password,
-            name: String(form.get("name")),
-          })
-        : await authClient.signIn.email({ email, password });
-      if (result.error)
-        setMessage(result.error.message ?? "Authentication failed.");
-    } catch {
-      setMessage("Unable to reach the server. Please try again.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function checkApi() {
-    setBusy(true);
-    try {
-      const { data } = await axios.get<MeResponse>("/api/me");
-      setMessage(`Protected API says hello to ${data.user.name}.`);
-    } catch {
-      setMessage("Unable to access the protected API. Try signing in again.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function signOut() {
-    setBusy(true);
-    setMessage("");
-    try {
-      const result = await authClient.signOut();
-      if (result.error) setMessage(result.error.message ?? "Sign out failed.");
-      else setSignUp(false);
-    } catch {
-      setMessage("Unable to sign out. Please try again.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
-    <main className="mx-auto max-w-lg px-4 py-12 sm:py-20">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <h1 className="text-2xl">MERN starter</h1>
-          </CardTitle>
-          <CardDescription>
-            React · Express · MongoDB · TypeScript
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isPending ? (
-            <p>Loading session…</p>
-          ) : sessionError ? (
-            <p role="alert" className="text-destructive">
-              Cannot load your session. Check that the server is running, then
-              reload.
+    <div className="min-h-screen bg-muted/40">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6 sm:px-8">
+        <a className="font-semibold tracking-tight" href="/">
+          MERN
+        </a>
+        <p className="text-sm text-muted-foreground">Course starter</p>
+      </header>
+
+      <main>
+        <section className="mx-auto grid max-w-6xl items-center gap-16 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[1fr_26rem] lg:gap-24">
+          <div className="max-w-2xl">
+            <p className="mb-5 text-sm font-medium">
+              A full stack you can follow.
             </p>
-          ) : session ? (
-            <section className="space-y-4">
-              <h2 className="text-xl font-medium">
-                Welcome, {session.user.name}
-              </h2>
-              <p className="text-muted-foreground">{session.user.email}</p>
-              <div className="flex flex-wrap gap-3">
-                <Button type="button" disabled={busy} onClick={checkApi}>
-                  Test protected API
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={busy}
-                  onClick={signOut}
+            <h1 className="max-w-xl text-5xl leading-[1.05] font-semibold tracking-[-0.04em] text-balance sm:text-7xl">
+              Learn by building the whole thing.
+            </h1>
+            <p className="mt-8 max-w-xl text-lg leading-8 text-muted-foreground text-pretty">
+              A production-minded MERN foundation for students. It exists so
+              class time goes into building real features—not repeating setup.
+            </p>
+          </div>
+
+          <div className="rounded-xl border bg-background p-5 sm:p-6">
+            <div className="flex items-center justify-between border-b pb-4">
+              <p className="text-sm font-medium">One request, end to end</p>
+              <span className="font-mono text-xs text-muted-foreground">
+                GET /api/health
+              </span>
+            </div>
+            <ol className="mt-2">
+              {layers.slice(0, 3).map(([number, name], index) => (
+                <li
+                  className="grid grid-cols-[2rem_1fr_auto] items-center gap-3 border-b py-4 text-sm last:border-0"
+                  key={name}
                 >
-                  Sign out
-                </Button>
-              </div>
-            </section>
-          ) : (
-            <section className="space-y-6">
-              <h2 className="text-xl font-medium">
-                {signUp ? "Create an account" : "Sign in"}
-              </h2>
-              <form className="space-y-4" onSubmit={submit}>
-                {signUp && (
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      autoComplete="name"
-                      required
-                      maxLength={100}
-                    />
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete={signUp ? "new-password" : "current-password"}
-                    minLength={8}
-                    maxLength={128}
-                    required
-                  />
-                </div>
-                <Button className="w-full" type="submit" disabled={busy}>
-                  {busy
-                    ? "Please wait…"
-                    : signUp
-                      ? "Create account"
-                      : "Sign in"}
-                </Button>
-              </form>
-              <Button
-                type="button"
-                variant="link"
-                className="h-auto whitespace-normal px-0"
-                disabled={busy}
-                onClick={() => {
-                  setSignUp(!signUp);
-                  setMessage("");
-                }}
-              >
-                {signUp
-                  ? "Already registered? Sign in"
-                  : "Need an account? Sign up"}
-              </Button>
-            </section>
-          )}
-        </CardContent>
-        <CardFooter>
-          <output
-            className="block min-h-5 text-sm text-muted-foreground"
-            aria-live="polite"
-          >
-            {message}
-          </output>
-        </CardFooter>
-      </Card>
-    </main>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {number}
+                  </span>
+                  <span>{name}</span>
+                  <span className="text-muted-foreground">
+                    {index === 0
+                      ? "React"
+                      : index === 1
+                        ? "Express"
+                        : "MongoDB"}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-5 flex items-center justify-between rounded-lg bg-primary px-4 py-3 text-sm text-primary-foreground">
+              <span className="font-mono">200 OK</span>
+              <span>Connected</span>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-5 pb-20 sm:px-8 sm:pb-28">
+          <div className="border-t pt-8">
+            <h2 className="text-sm font-medium">What it contains</h2>
+            <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+              {layers.map(([number, name, contents]) => (
+                <article key={name}>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {number}
+                  </p>
+                  <h3 className="mt-3 font-medium">{name}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    {contents}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
