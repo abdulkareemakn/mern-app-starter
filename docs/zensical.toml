@@ -6,7 +6,7 @@ site_description = "Build and deploy the MERN course starter."
 
 repo_url = "https://github.com/abdulkareemakn/mern-app-starter"
 repo_name = "abdulkareemakn/mern-app-starter"
-edit_uri = "blob/main/docs/"
+edit_uri = "blob/main/docs/docs/"
 
 nav = [
   { "Home" = "index.md" },
