@@ -86,6 +86,26 @@ app.get(
 
 The middleware returns `400` with `{ error, details }` on failure. Express infers inline route handlers from the schema; for an extracted handler, use `ValidatedLocals<typeof schemas>` from the same module rather than duplicating a request type.
 
+## Private file uploads
+
+The backend supports direct uploads and private downloads with five-minute presigned
+URLs. Cloudflare R2 and Backblaze B2 are the recommended providers. Express never
+proxies file bytes. There is no upload UI, delete endpoint, or content inspection.
+
+Configure `STORAGE_ENDPOINT`, `STORAGE_REGION`, `STORAGE_BUCKET`,
+`STORAGE_ACCESS_KEY_ID`, and `STORAGE_SECRET_ACCESS_KEY` using
+[Development workflow: File storage](docs/docs/installation/development-workflow.md#file-storage).
+That page documents provider endpoints, policy defaults, credentials, and bucket CORS.
+Without storage configuration, authenticated upload requests return `503`.
+
+Follow the [File uploads guide](docs/docs/build/file-uploads.md) for the complete
+request sequence, implementation, and verification. The upload OpenAPI contract is
+served at `/api/openapi.json` from
+[`apps/server/src/openapi.json`](apps/server/src/openapi.json).
+
+[Cron jobs](docs/docs/build/cron-jobs.md#pending-upload-cleanup) documents the cleanup
+CLI and hourly production scheduling. The API does not schedule cleanup automatically.
+
 ## Commands
 
 Run these at the repository root:

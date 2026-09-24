@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 import type { createAuth } from "#/auth";
 import type { Config } from "#/config";
 import { authMiddleware } from "#/middleware/auth";
+import { uploadsRouter } from "#/routes/uploads";
+import openapi from "./openapi.json" with { type: "json" };
 
 export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   const app = express();
@@ -21,6 +23,8 @@ export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
   app.all("/api/auth/{*path}", toNodeHandler(auth));
   app.use(express.json({ limit: "100kb" }));
 
+  app.get("/api/openapi.json", (_req, res) => res.json(openapi));
+
   app.get("/api/health", (_req, res) => {
     const ready = mongoose.connection.readyState === 1;
     res
@@ -33,6 +37,8 @@ export function createApp(auth: ReturnType<typeof createAuth>, config: Config) {
     const { id, name, email } = session.user;
     res.json({ user: { id, name, email } } satisfies MeResponse);
   });
+
+  app.use("/api/uploads", authMiddleware(auth), uploadsRouter(config));
 
   app.use("/api", (_req, res) => {
     res.status(404).json({ error: "API route not found" } satisfies ApiError);

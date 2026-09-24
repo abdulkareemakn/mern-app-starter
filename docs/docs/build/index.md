@@ -24,6 +24,12 @@ may only need a route and database query. Start with the smallest relevant path.
 - [__API routes__](/build/api-routes)
 
     Define a contract, implement an Express handler, and call it from the client.
+- [__File uploads__](/build/file-uploads)
+
+    Upload to private storage, confirm metadata, and request temporary downloads.
+- [__Cron jobs__](/build/cron-jobs)
+
+    Schedule cleanup of abandoned uploads.
 - [__Client pages__](/build/client-pages)
 
     Add typed TanStack Router pages and loaders.

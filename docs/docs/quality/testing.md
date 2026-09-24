@@ -60,6 +60,9 @@ Current coverage includes:
   - Confirms invalid names, emails, and ages produce structured validation errors.
 - `email-client.test.ts`
   - Confirms non-production email is sent through the local SMTP inbox configuration.
+- `storage.test.ts`
+  - Checks signed upload headers, URL expiry, and R2/B2 endpoint configuration.
+  - Distinguishes missing bucket objects from provider failures using mocked calls.
 
 Use unit tests for pure functions, configuration parsing, schemas, and other logic that
 can be tested without assembling the server.
@@ -92,6 +95,11 @@ Current coverage includes:
 
 Use integration tests when several server pieces must work together but browser behavior
 is not part of the requirement.
+
+`uploads.test.ts` covers upload validation, ownership, confirmation, private downloads,
+and pending-file cleanup with real MongoDB and mocked S3 network calls. See
+[File uploads: Verify and troubleshoot](/build/file-uploads/#verify-and-troubleshoot)
+for the focused command and provider-check boundaries.
 
 ## End-to-end tests
 
@@ -146,6 +154,11 @@ TEST_MONGODB_URI=mongodb://127.0.0.1:27017
 
 Test mode deliberately does not fall back to `MONGODB_URI`. This prevents tests from
 accidentally modifying the development database.
+
+Upload integration tests additionally require the test address in the process
+environment. Follow [Development workflow: Upload test database](/installation/development-workflow/#upload-test-database)
+before running that file or the full integration suite; its configuration does not
+load `.env`.
 
 Each persistence test run uses a random database name:
 

@@ -37,6 +37,16 @@ Package-level commands are useful when working on one workspace:
 pnpm --filter @mern/client generate-routes
 ```
 
+After configuring storage, run pending-upload cleanup with:
+
+```sh
+pnpm --filter @mern/server uploads:cleanup
+```
+
+This deletes expired pending objects and metadata from the configured bucket and
+database. See [Cron jobs](/build/cron-jobs/#pending-upload-cleanup) for prerequisites,
+scheduling, and the expected summary.
+
 ## Test databases
 
 Integration tests create and delete a random `mern_test_*` database. E2E tests use a

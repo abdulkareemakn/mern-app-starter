@@ -1,0 +1,296 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "MERN starter API", "version": "1.0.0" },
+  "servers": [{ "url": "/" }],
+  "paths": {
+    "/api/uploads": {
+      "post": {
+        "operationId": "createUpload",
+        "summary": "Create a pending file and a presigned PUT URL",
+        "description": "Upload raw bytes directly to uploadUrl within five minutes using the exact Content-Type and Content-Length supplied here. Do not send multipart form data. The server never proxies file bytes. MIME types and the byte cap are configured by the deployment (default cap 26214400 bytes).",
+        "tags": ["Uploads"],
+        "security": [{ "session": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["filename", "mimeType", "sizeBytes"],
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Trimmed display name without control characters; never used to derive the storage extension."
+                  },
+                  "mimeType": {
+                    "type": "string",
+                    "example": "image/png",
+                    "description": "An exact entry in STORAGE_ALLOWED_MIME_TYPES."
+                  },
+                  "sizeBytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Exact upload length, at most STORAGE_MAX_UPLOAD_BYTES."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pending file created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["fileId", "uploadUrl", "key"],
+                  "properties": {
+                    "fileId": { "$ref": "#/components/schemas/FileId" },
+                    "uploadUrl": { "type": "string", "format": "uri" },
+                    "key": {
+                      "type": "string",
+                      "description": "ownerId/uuid.extension, with extension derived from MIME type."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "413": { "$ref": "#/components/responses/TooLarge" },
+          "500": { "$ref": "#/components/responses/InternalError" },
+          "503": { "$ref": "#/components/responses/Unavailable" }
+        }
+      }
+    },
+    "/api/uploads/{id}/confirm": {
+      "post": {
+        "operationId": "confirmUpload",
+        "summary": "Verify uploaded metadata and confirm an owned file",
+        "description": "Accepts no body or an empty JSON object. HEAD must report the exact recorded length and MIME type. Expired pending uploads cannot be confirmed. Reconfirming an already confirmed file returns the existing record and timestamp.",
+        "tags": ["Uploads"],
+        "security": [{ "session": [] }],
+        "parameters": [{ "$ref": "#/components/parameters/FileId" }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "additionalProperties": false }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Confirmed file",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/File" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": {
+            "description": "Object not uploaded, pending upload expired, or concurrent confirmation changed the record",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          },
+          "413": { "$ref": "#/components/responses/TooLarge" },
+          "422": {
+            "description": "Uploaded object size or MIME type does not match",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalError" },
+          "503": { "$ref": "#/components/responses/Unavailable" }
+        }
+      }
+    },
+    "/api/uploads/{id}": {
+      "get": {
+        "operationId": "downloadUpload",
+        "summary": "Get a five-minute private download URL for a confirmed owned file",
+        "description": "No request body. The URL serves the object as an attachment. All upload API responses use Cache-Control: no-store.",
+        "tags": ["Uploads"],
+        "security": [{ "session": [] }],
+        "parameters": [{ "$ref": "#/components/parameters/FileId" }],
+        "responses": {
+          "200": {
+            "description": "Presigned GET URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["downloadUrl"],
+                  "properties": {
+                    "downloadUrl": { "type": "string", "format": "uri" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": {
+            "description": "Upload has not been confirmed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiError" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalError" },
+          "503": { "$ref": "#/components/responses/Unavailable" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "session": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "better-auth.session_token",
+        "description": "Better Auth session cookie, named __Secure-better-auth.session_token over HTTPS."
+      }
+    },
+    "parameters": {
+      "FileId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "$ref": "#/components/schemas/FileId" }
+      }
+    },
+    "schemas": {
+      "FileId": { "type": "string", "pattern": "^[a-fA-F0-9]{24}$" },
+      "ApiError": {
+        "type": "object",
+        "required": ["error"],
+        "properties": { "error": { "type": "string" } }
+      },
+      "ValidationError": {
+        "type": "object",
+        "required": ["error", "details"],
+        "properties": {
+          "error": { "type": "string" },
+          "details": {
+            "type": "object",
+            "required": ["formErrors", "fieldErrors"],
+            "properties": {
+              "formErrors": { "type": "array", "items": { "type": "string" } },
+              "fieldErrors": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "File": {
+        "type": "object",
+        "required": [
+          "id",
+          "key",
+          "ownerId",
+          "originalName",
+          "mimeType",
+          "sizeBytes",
+          "status",
+          "createdAt",
+          "confirmedAt"
+        ],
+        "properties": {
+          "id": { "$ref": "#/components/schemas/FileId" },
+          "key": { "type": "string" },
+          "ownerId": { "$ref": "#/components/schemas/FileId" },
+          "originalName": { "type": "string" },
+          "mimeType": { "type": "string" },
+          "sizeBytes": { "type": "integer", "minimum": 1 },
+          "status": { "type": "string", "enum": ["pending", "confirmed"] },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "confirmedAt": { "type": ["string", "null"], "format": "date-time" }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Malformed JSON or invalid body/ID, including disallowed MIME types or oversized declared uploads",
+        "content": {
+          "application/json": {
+            "schema": {
+              "anyOf": [
+                { "$ref": "#/components/schemas/ApiError" },
+                { "$ref": "#/components/schemas/ValidationError" }
+              ]
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Sign in to continue",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ApiError" }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "You do not own this file",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ApiError" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "File not found",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ApiError" }
+          }
+        }
+      },
+      "TooLarge": {
+        "description": "JSON request body exceeds the server's 100 KB limit",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ApiError" }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ApiError" }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "File storage is not configured",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ApiError" }
+          }
+        }
+      }
+    }
+  }
+}

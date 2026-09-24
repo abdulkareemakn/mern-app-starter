@@ -1,3 +1,4 @@
+import { extension } from "mime-types";
 import * as z from "zod";
 
 const origin = (key: string) =>
@@ -35,8 +36,55 @@ const envSchema = z
     BETTER_AUTH_SECRET: z.string().trim().min(32),
     RESEND_API_KEY: z.string().trim().min(1).optional(),
     TRUST_PROXY: z.string().optional(),
+    STORAGE_ENDPOINT: origin("STORAGE_ENDPOINT").optional(),
+    STORAGE_REGION: z.string().trim().min(1).optional(),
+    STORAGE_BUCKET: z.string().trim().min(1).optional(),
+    STORAGE_ACCESS_KEY_ID: z.string().trim().min(1).optional(),
+    STORAGE_SECRET_ACCESS_KEY: z.string().trim().min(1).optional(),
+    STORAGE_MAX_UPLOAD_BYTES: z.coerce
+      .number()
+      .int()
+      .positive()
+      .max(5_000_000_000)
+      .default(25 * 1024 * 1024),
+    STORAGE_ALLOWED_MIME_TYPES: z
+      .string()
+      .default("image/jpeg,image/png,image/webp,application/pdf")
+      .transform((value) => [
+        ...new Set(value.split(",").map((mime) => mime.trim().toLowerCase())),
+      ])
+      .refine(
+        (types) =>
+          types.every(
+            (mime) => /^[\w.+-]+\/[\w.+-]+$/.test(mime) && extension(mime),
+          ),
+        "STORAGE_ALLOWED_MIME_TYPES must contain comma-separated MIME types with known extensions",
+      ),
+    STORAGE_PENDING_MAX_AGE_HOURS: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(8760)
+      .default(24),
   })
   .superRefine((env, context) => {
+    const storageKeys = [
+      "STORAGE_ENDPOINT",
+      "STORAGE_REGION",
+      "STORAGE_BUCKET",
+      "STORAGE_ACCESS_KEY_ID",
+      "STORAGE_SECRET_ACCESS_KEY",
+    ] as const;
+    if (storageKeys.some((key) => env[key] !== undefined)) {
+      for (const key of storageKeys) {
+        if (!env[key])
+          context.addIssue({
+            code: "custom",
+            path: [key],
+            message: `${key} is required when storage is configured`,
+          });
+      }
+    }
     const mongodbKey =
       env.NODE_ENV === "test" ? "TEST_MONGODB_URI" : "MONGODB_URI";
     if (!env[mongodbKey])
@@ -84,6 +132,23 @@ export function readConfig(env: NodeJS.ProcessEnv) {
     appUrl: parsed.APP_URL,
     authUrl: parsed.BETTER_AUTH_URL,
     resendApiKey: parsed.RESEND_API_KEY,
+    storage:
+      parsed.STORAGE_ENDPOINT &&
+      parsed.STORAGE_REGION &&
+      parsed.STORAGE_BUCKET &&
+      parsed.STORAGE_ACCESS_KEY_ID &&
+      parsed.STORAGE_SECRET_ACCESS_KEY
+        ? {
+            endpoint: parsed.STORAGE_ENDPOINT,
+            region: parsed.STORAGE_REGION,
+            bucket: parsed.STORAGE_BUCKET,
+            accessKeyId: parsed.STORAGE_ACCESS_KEY_ID,
+            secretAccessKey: parsed.STORAGE_SECRET_ACCESS_KEY,
+          }
+        : undefined,
+    storageMaxUploadBytes: parsed.STORAGE_MAX_UPLOAD_BYTES,
+    storageAllowedMimeTypes: parsed.STORAGE_ALLOWED_MIME_TYPES,
+    storagePendingMaxAgeHours: parsed.STORAGE_PENDING_MAX_AGE_HOURS,
     trustProxy:
       parsed.TRUST_PROXY?.split(",")
         .map((value) => value.trim())

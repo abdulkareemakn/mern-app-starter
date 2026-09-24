@@ -61,4 +61,53 @@ describe("readConfig", () => {
       "RESEND_API_KEY",
     );
   });
+
+  test("storage is optional, but connection settings are all-or-none", () => {
+    expect(readConfig(validEnv)).toMatchObject({
+      storage: undefined,
+      storageMaxUploadBytes: 26214400,
+      storagePendingMaxAgeHours: 24,
+    });
+    expect(() =>
+      readConfig({
+        ...validEnv,
+        STORAGE_ENDPOINT: "https://storage.example.com",
+      }),
+    ).toThrow("STORAGE_BUCKET");
+    expect(
+      readConfig({
+        ...validEnv,
+        STORAGE_ENDPOINT: "https://storage.example.com/",
+        STORAGE_REGION: "auto",
+        STORAGE_BUCKET: "uploads",
+        STORAGE_ACCESS_KEY_ID: "test-key",
+        STORAGE_SECRET_ACCESS_KEY: "test-secret",
+        STORAGE_ALLOWED_MIME_TYPES: " image/png, application/pdf,image/png ",
+        STORAGE_MAX_UPLOAD_BYTES: "1000",
+        STORAGE_PENDING_MAX_AGE_HOURS: "48",
+      }),
+    ).toMatchObject({
+      storage: {
+        endpoint: "https://storage.example.com",
+        region: "auto",
+        bucket: "uploads",
+      },
+      storageAllowedMimeTypes: ["image/png", "application/pdf"],
+      storageMaxUploadBytes: 1000,
+      storagePendingMaxAgeHours: 48,
+    });
+  });
+
+  test.each([
+    { STORAGE_MAX_UPLOAD_BYTES: "0" },
+    { STORAGE_MAX_UPLOAD_BYTES: "1.5" },
+    { STORAGE_MAX_UPLOAD_BYTES: "5000000001" },
+    { STORAGE_PENDING_MAX_AGE_HOURS: "0" },
+    { STORAGE_ALLOWED_MIME_TYPES: "" },
+    { STORAGE_ALLOWED_MIME_TYPES: "image/*" },
+    { STORAGE_ALLOWED_MIME_TYPES: "application/x-unknown-upload-format" },
+    { STORAGE_ALLOWED_MIME_TYPES: "image/png," },
+  ])("rejects invalid storage policy %j", (invalid) => {
+    expect(() => readConfig({ ...validEnv, ...invalid })).toThrow("STORAGE_");
+  });
 });

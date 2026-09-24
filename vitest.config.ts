@@ -9,6 +9,9 @@ export default {
   resolve: {
     alias: Object.fromEntries(
       [
+        "@aws-sdk/client-s3",
+        "@aws-sdk/s3-request-presigner",
+        "mime-types",
         "better-auth/adapters/mongodb",
         "better-auth/node",
         "better-auth",

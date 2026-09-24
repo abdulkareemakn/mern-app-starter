@@ -42,6 +42,78 @@ browser code.
     Commit `.env.example`, never `.env`. Production hosts should inject the same values
     through their secret settings instead of copying a development file.
 
+### File storage
+
+File uploads are optional. Cloudflare R2 and Backblaze B2 are the recommended
+S3-compatible providers. Create a private bucket and a bucket-scoped credential
+that can read, write, and delete objects. Then uncomment and fill in all five
+connection settings from `.env.example` in the local `.env`, or inject them through
+the production host's secret settings:
+
+| Variable | Value |
+| --- | --- |
+| `STORAGE_ENDPOINT` | The provider's S3 HTTP(S) origin, without a bucket path, query, or embedded credentials |
+| `STORAGE_REGION` | `auto` for R2; the bucket's region for B2 |
+| `STORAGE_BUCKET` | The private bucket name |
+| `STORAGE_ACCESS_KEY_ID` | The storage access key ID; B2 uses an application key ID |
+| `STORAGE_SECRET_ACCESS_KEY` | The corresponding secret access key; B2 uses the application key |
+
+For R2, the usual endpoint is `https://<account-id>.r2.cloudflarestorage.com`.
+For B2, use `https://s3.<region>.backblazeb2.com`. Replace the placeholders with the
+values shown by the provider. Use HTTPS for hosted buckets.
+
+When all five settings are absent, the API starts but authenticated upload requests
+return `503`. If any is supplied, all five must be nonempty or startup fails.
+Restart the API after changing configuration. Never prefix storage credentials with
+`VITE_` or send them to clients.
+
+The following policy settings already have defaults:
+
+| Variable | Default | Accepted values |
+| --- | --- | --- |
+| `STORAGE_MAX_UPLOAD_BYTES` | `26214400` (25 MiB) | Whole bytes from 1 to 5000000000 |
+| `STORAGE_ALLOWED_MIME_TYPES` | `image/jpeg,image/png,image/webp,application/pdf` | Comma-separated MIME types with known extensions; no wildcards or empty entries |
+| `STORAGE_PENDING_MAX_AGE_HOURS` | `24` | Whole hours from 1 to 8760 |
+
+The allowlist is trimmed and lowercased during configuration parsing. Requests must
+use an exact resulting MIME type. The pending age controls eligibility for
+[cleanup](/build/cron-jobs/#pending-upload-cleanup); it does not start a scheduler.
+
+For browser uploads, configure the bucket's CORS rules to allow the application
+origin, `PUT` and `GET`, and the `Content-Type` request header. CORS tells the browser
+which cross-origin requests it can make; it does not make the bucket public. Use the
+provider's [R2 CORS guide](https://developers.cloudflare.com/r2/buckets/cors/) or
+[B2 CORS guide](https://www.backblaze.com/docs/cloud-storage-cross-origin-resource-sharing-rules)
+for the provider-specific format.
+
+Follow [File uploads](/build/file-uploads) to verify the configuration with a direct
+PUT, confirmation, and private download. Receiving an upload URL alone does not
+verify bucket access.
+
+### Upload test database
+
+The upload integration tests read the test database address from the process
+environment, not from `.env`. Start a dedicated MongoDB server first, then run one
+of these commands from the repository root in the terminal that will run tests.
+These examples use the local MongoDB server; substitute a dedicated test server
+address when needed.
+
+=== "Windows PowerShell"
+
+    ```powershell
+    $env:TEST_MONGODB_URI = "mongodb://127.0.0.1:27017"
+    ```
+
+=== "macOS / Linux"
+
+    ```sh
+    export TEST_MONGODB_URI=mongodb://127.0.0.1:27017
+    ```
+
+The tests supply dummy storage settings and mock S3 network calls. Real bucket
+credentials are not needed. See [File uploads: Verify and troubleshoot](/build/file-uploads/#verify-and-troubleshoot)
+for the test commands and [Testing](/quality/testing/#mongodb) for MongoDB setup.
+
 ## Start the workspace
 
 ```sh
@@ -110,5 +182,13 @@ Continue to [Project structure](/installation/project-structure) to locate the c
 
 - [Node environment files](https://nodejs.org/api/environment_variables.html#env-files)
 - [Vite environment variables](https://vite.dev/guide/env-and-mode)
+- [Cloudflare R2 S3 client configuration](https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/)
+- [Cloudflare R2 CORS configuration](https://developers.cloudflare.com/r2/buckets/cors/)
+- [Backblaze B2 S3-compatible API](https://www.backblaze.com/docs/cloud-storage-s3-compatible-api)
+- [Backblaze B2 CORS rules](https://www.backblaze.com/docs/cloud-storage-cross-origin-resource-sharing-rules)
+
+Related starter documentation:
+
+- [File uploads](/build/file-uploads)
 - [Commands](/reference/commands)
 - [Testing](/quality/testing)
