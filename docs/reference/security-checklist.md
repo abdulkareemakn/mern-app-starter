@@ -35,4 +35,7 @@ Run this checklist before exposing an environment to real users.
 - [ ] Every private endpoint checks the session on the server.
 - [ ] Request bodies are validated before use.
 
-See [MongoDB Atlas](../deployment/mongodb-atlas.md) for managed database network controls.
+## References
+
+- [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
+- [Authentication](/build/authentication)

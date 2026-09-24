@@ -5,7 +5,13 @@ description: Build Express 5 API routes with shared response contracts, Zod requ
 
 # API routes with Express
 
-The server uses [Express 5](https://expressjs.com/) for API routes. Small routes live in `apps/server/src/app.ts`; extract a feature router only when several related endpoints make that file difficult to scan.
+This starter kit uses Express 5 to expose application data to its React client. An API route is the agreement between the browser and server: what the browser can ask
+for, what it gets back, and what happens when the request is invalid.
+
+<!-- NOTE: No need to mention this here. Have a proper docs section for creating individual routers as it's a very common problem. Something like it exists already but isn't proper and doesn't flow correctly. -->
+
+Small routes live in `apps/server/src/app.ts`; extract a feature router only when
+several related endpoints make that file difficult to scan.
 
 Keep two boundaries distinct:
 
@@ -27,7 +33,9 @@ packages/shared/src/
   index.ts                  # Browser-safe response contracts
 ```
 
-## Add a response contract
+## Define the widget contract
+
+### Add a response contract
 
 Put response shapes in `packages/shared/src/index.ts` when the client also consumes them:
 
@@ -48,7 +56,7 @@ export type WidgetResponse = {
 
 Use `import type` so these contracts disappear from the compiled JavaScript.
 
-## Create the request schema
+### Create the request schema
 
 Request types come from their Zod schemas rather than a duplicate interface:
 
@@ -64,7 +72,9 @@ export type CreateWidget = z.infer<typeof createWidgetSchema>;
 
 See [Validation](/build/validation) for bodies, URL parameters, query strings, and validation errors.
 
-## Add the route
+## Implement the routes
+
+### Add the route
 
 Declare routes after `express.json()` and before the `/api` catch-all. Use `validate()` before the handler and read its parsed output from `res.locals.validated`:
 
@@ -94,7 +104,7 @@ The handler never returns to the original `req.body`. Zod's trimmed, coerced, de
 
 Express 5 forwards rejected promises from async handlers to the central error handler, so a normal database call does not need a wrapper or repetitive `try/catch`.
 
-## Read data
+### Read data
 
 Response contracts also keep read endpoints aligned with the client:
 
@@ -115,21 +125,23 @@ app.get("/api/widgets", async (_req, res) => {
 
 `satisfies` checks the JSON shape without changing the inferred type of the value.
 
-## Protect a route
+### Protect a route
 
-Use `authMiddleware(auth)` when a route is private:
+If widgets belong to signed-in users, add `ownerId` to the model, set it when creating a widget, and filter reads by that ID. Use `authMiddleware(auth)` when a route is private:
 
 ```ts
 app.get("/api/widgets/mine", authMiddleware(auth), async (_req, res) => {
-  const userId = res.locals.session.user.id;
-  const widgets = await Widget.find({ userId }).lean();
-  res.json({ widgets });
+  const ownerId = res.locals.session.user.id;
+  const widgets = await Widget.find({ ownerId }).lean();
+  res.json({ widgets: widgets.map((widget) => ({
+    id: widget._id.toString(), name: widget.name,
+  })) } satisfies WidgetListResponse);
 });
 ```
 
 An unauthenticated request stops at `authMiddleware` and never reaches the handler. See [Authentication](/build/authentication) for sessions and protected routes.
 
-## Extract a router when needed
+### Extract a router when needed
 
 Once a feature has several endpoints, move them together:
 
@@ -148,30 +160,19 @@ Mount the router before the API 404 handler:
 app.use("/api/widgets", widgetsRouter);
 ```
 
-Do not create a router, controller, and service for a single short endpoint. Add a layer when it removes real repetition or separates a feature that has grown.
-
 ## Call the route from the client
 
 ```ts title="apps/client/src/lib/widgets.ts"
 import type { WidgetResponse } from "@mern/shared";
+import axios from "axios";
 
 export async function createWidget(name: string) {
-  const response = await fetch("/api/widgets", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error ?? "Unable to create widget");
-  }
-
-  return (await response.json()) as WidgetResponse;
+  const { data } = await axios.post<WidgetResponse>("/api/widgets", { name });
+  return data;
 }
 ```
 
-`fetch` does not reject for HTTP errors, so check `response.ok` before reading the success response.
+Axios sends JSON objects and rejects non-2xx responses by default. The caller can handle rejected requests and display an appropriate message.
 
 ## Verify
 
@@ -183,7 +184,11 @@ pnpm typecheck
 pnpm check
 ```
 
-## Reference
+## Next step
+
+Continue to [Client pages](/build/client-pages) to display the widget list.
+
+## References
 
 - [Express routing](https://expressjs.com/en/guide/routing.html)
 - [Express error handling](https://expressjs.com/en/guide/error-handling.html)

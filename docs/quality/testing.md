@@ -5,7 +5,9 @@ description: Test schemas, API behavior, authentication, and complete browser wo
 
 # Testing
 
-This repository uses three test layers, organized under one root directory:
+This starter kit uses three test layers. Unit tests check isolated logic quickly, API integration tests check how server pieces work together, and end-to-end tests check complete browser workflows. Choose the cheapest layer that can prove a change works.
+
+The tests live under one root directory:
 
 ```text
 tests/
@@ -308,7 +310,7 @@ The normal teardown removes the random database. If a process is terminated befo
 teardown runs, inspect MongoDB for databases beginning with `mern_test_` or
 `mern_e2e_` and remove only the test database that belongs to the failed run.
 
-## Reference
+## References
 
 - [Vitest](https://vitest.dev/)
 - [Supertest](https://github.com/forwardemail/supertest)

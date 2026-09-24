@@ -4,7 +4,7 @@ description: Customize the starter's existing not-found screen for URLs that do 
 ---
 # 404 page
 
-The starter kit includes a default 404 page at `apps/client/src/pages/404.tsx`.
+This starter kit includes a default 404 page at `apps/client/src/pages/404.tsx`.
 
 The root route wires it in through `notFoundComponent` in
 `apps/client/src/routes/__root.tsx`:
@@ -19,3 +19,8 @@ export const Route = createRootRoute({
 ## Edit the page
 
 `404.tsx` is an ordinary component, so change the markup, copy, and layout freely.
+
+## References
+
+- [TanStack Router not-found routes](https://tanstack.com/router/latest/docs/framework/react/guide/not-found-errors)
+- [Client pages](/build/client-pages)

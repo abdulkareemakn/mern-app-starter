@@ -5,9 +5,8 @@ description: Deploy the complete React, Express, and MongoDB application to Deno
 
 # Production deployment
 
-Deploy this template as **one Deno Deploy app**. In production, Express serves the
-built React SPA and the `/api` routes from the same HTTPS origin, so Better Auth
-sessions work without cross-origin cookie configuration.
+The starter kit runs as **one Deno Deploy app**. In production, Express serves the
+built React SPA and the `/api` routes from the same HTTPS origin.
 
 The repository includes `deno.json`, which tells Deno Deploy to install the locked
 pnpm workspace, build the client and server, and start the compiled Express server. Do
@@ -23,12 +22,7 @@ not create a second static-site app for `apps/client`: Express already serves
    [the starter repository](https://github.com/abdulkareemakn/mern-app-starter), then
    clone and push that copy. Deno Deploy builds from that GitHub repository; it does
    not deploy an unpushed local change.
-3. Provision a reachable MongoDB database, such as [MongoDB Atlas](mongodb-atlas.md).
-   Deno Deploy does not run the `compose.db.yaml` MongoDB container.
-
-If the repository is not listed during setup, authorize the Deno Deploy GitHub app for
-your GitHub account or repository from the prompt. See
-[Deno's GitHub integration guidance](https://docs.deno.com/deploy/reference/apps/#github-integration).
+3. Provision a reachable MongoDB database.
 
 ## Create the app
 
@@ -56,30 +50,44 @@ edit that in the same app settings screen after the first deployment.
 
 ## Set environment variables
 
-After the first build returns the production URL, replace `https://your-app.deno.net`
-below with that exact URL. `APP_URL` and `BETTER_AUTH_URL` must be identical.
+After the first build returns the production URL, create a temporary `.env.production` file in the project root:
 
-```sh
-deno deploy env add NODE_ENV production
-deno deploy env add MONGODB_URI "mongodb+srv://..." --secret
-deno deploy env add BETTER_AUTH_SECRET "$(openssl rand -base64 32)" --secret
-deno deploy env add APP_URL "https://your-app.deno.net"
-deno deploy env add BETTER_AUTH_URL "https://your-app.deno.net"
+```dotenv
+NODE_ENV=production
+MONGODB_URI=mongodb+srv://...
+BETTER_AUTH_SECRET=paste-generated-secret
+RESEND_API_KEY=paste-resend-key
+APP_URL=https://your-app.deno.net
+BETTER_AUTH_URL=https://your-app.deno.net
 ```
 
-`MONGODB_URI` and `BETTER_AUTH_SECRET` are secrets; do not commit them or put them in
-the client. Leave `TRUST_PROXY` unset on Deno Deploy unless Deno support gives you
-specific trusted proxy addresses. Guessing weakens rate-limit client identification.
+Replace the placeholders with your production values and replace `https://your-app.deno.net` with the production URL returned by Deno Deploy. `APP_URL` and `BETTER_AUTH_URL` must be identical.
 
-Use each variable in the `production` context:
+Generate `BETTER_AUTH_SECRET` locally with the Node.js command in [Development workflow](/installation/development-workflow/#environment-variables). Verify a sending domain with Resend before sending production mail.
+
+Load the variables into Deno Deploy:
+
+```sh
+deno deploy env load .env.production
+```
+
+Once the command succeeds, **delete `.env.production` immediately**. It contains production credentials and should not be committed or kept in the repository:
+
+```sh
+rm .env.production
+```
+
+Then restrict the variables to the `production` context:
 
 ```sh
 deno deploy env update-contexts NODE_ENV production
 deno deploy env update-contexts MONGODB_URI production
 deno deploy env update-contexts BETTER_AUTH_SECRET production
+deno deploy env update-contexts RESEND_API_KEY production
 deno deploy env update-contexts APP_URL production
 deno deploy env update-contexts BETTER_AUTH_URL production
 ```
+
 
 The CLI saves the app selected during creation. If you open another checkout or shell,
 select it before managing variables: `deno deploy switch --org your-org --app your-app`.
@@ -100,3 +108,8 @@ Use the dashboard to add a custom domain, then update both public URL variables 
 domain and redeploy. Deno documents the GitHub-triggered build flow in its
 [Applications reference](https://docs.deno.com/deploy/reference/apps/) and the build
 configuration in its [Builds reference](https://docs.deno.com/deploy/reference/builds/).
+
+## References
+
+- [Deno Deploy CLI](https://docs.deno.com/runtime/reference/cli/deploy/)
+- [Resend domain verification](https://resend.com/docs/dashboard/domains/introduction)

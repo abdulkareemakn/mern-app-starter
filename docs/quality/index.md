@@ -19,3 +19,8 @@ Run the checks from the repository root after each focused change.
 
     Run Vitest unit tests, Supertest API tests, and Playwright browser workflows.
 </div>
+
+## References
+
+- [Development workflow](/installation/development-workflow)
+- [Commands](/reference/commands)

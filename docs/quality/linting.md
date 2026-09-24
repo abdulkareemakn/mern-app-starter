@@ -5,7 +5,7 @@ description: Catch correctness problems and organize imports with Biome's recomm
 
 # Linting with Biome
 
-The workspace uses Biome's linter instead of ESLint. The root configuration applies one rule set throughout the pnpm workspace.
+This starter kit uses Biome's linter instead of ESLint. The root configuration applies one rule set throughout the pnpm workspace.
 
 ## Run the checks
 
@@ -94,7 +94,7 @@ pnpm exec biome check apps/server/src
 
 Run the root `pnpm check` before finishing so unrelated workspace configuration is not missed.
 
-## Reference
+## References
 
 - [Biome linter](https://biomejs.dev/linter/)
 - [Biome recommended rules](https://biomejs.dev/linter/rules/)

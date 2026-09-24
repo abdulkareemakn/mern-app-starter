@@ -10,26 +10,27 @@ edit_uri = "blob/main/docs/"
 
 nav = [
   { "Home" = "index.md" },
-  { "Installation" = [
+  { "Start here" = [
     "installation/prerequisites.md",
     "installation/installation.md",
-    "installation/project-structure.md",
     "installation/development-workflow.md",
+    "installation/project-structure.md",
+  ] },
+  { "Design and UI" = [
+    "build/design-system.md",
+    "build/fonts.md",
+    "build/icons.md",
+    "build/shadcn-ui.md",
   ] },
   { "Build your app" = [
     "build/index.md",
-    "build/authentication.md",
     "build/database.md",
-    "build/api-routes.md",
+    "build/authentication.md",
     "build/validation.md",
+    "build/api-routes.md",
     "build/client-pages.md",
-    "build/middleware.md",
     "build/emails.md",
-    "build/design-system.md",
-    "build/shadcn-ui.md",
-    "build/fonts.md",
-    "build/agent-skills.md",
-    "build/environment-variables.md",
+    "build/middleware.md",
     "build/not-found-page.md",
   ] },
   { "Code quality" = [
@@ -37,20 +38,21 @@ nav = [
     "quality/formatting.md",
     "quality/linting.md",
     "quality/testing.md",
-    "quality/documentation.md",
   ] },
   { "Deployment" = [
     "deployment/index.md",
     "deployment/production.md",
-    "deployment/production-build.md",
     "deployment/docker.md",
-    "deployment/mongodb-atlas.md",
+    "deployment/production-build.md",
   ] },
   { "Reference" = [
     "reference/index.md",
     "reference/commands.md",
     "reference/api-endpoints.md",
+    "reference/tech-stack.md",
+    "reference/recommendations.md",
     "reference/security-checklist.md",
+    "reference/skills.md",
   ] },
 ]
 
@@ -61,32 +63,25 @@ nav = [
 # variant = "classic"
 # custom_dir = "overrides"
 # favicon = "images/favicon.png"
+
+font.text = "Rubik"
+font.code = "Martian Mono"
 language = "en"
 features = [
-  "announce.dismiss",
   # "content.action.edit",
-  "content.action.view",
-  "content.code.annotate",
   "content.code.copy",
-  "content.code.select",
-  "content.footnote.tooltips",
   "content.tabs.link",
-  "content.tooltips",
   # "header.autohide",
   # "navigation.expand",
   "navigation.footer",
   "navigation.indexes",
   "navigation.instant",
-  "navigation.instant.prefetch",
   # "navigation.instant.progress",
-  "navigation.path",
   # "navigation.prune",
   "navigation.sections",
   "navigation.tabs",
   # "navigation.tabs.sticky",
   "navigation.top",
-  "navigation.tracking",
-  "search.highlight",
   # "toc.follow",
   # "toc.integrate",
 ]

@@ -1,40 +1,64 @@
 ---
 title: Fonts
-description: Self-host fonts without depending on a third-party font CDN.
+description: Choose a small type system and keep font files close to the app.
 ---
 
 # Fonts
 
-The client is prepared for self-hosted fonts. `src/styles.css` exposes `font-sans`, `font-heading`, and `font-mono`; `public/fonts/.gitkeep` reserves a location for licensed local files. Keep the font decision in `DESIGN.md`, then make the smallest matching implementation change.
+Choose three typefaces before building screens:
 
-## Fontsource (recommended)
+- **Serif** for editorial or expressive moments
+- **Sans serif** for the main interface and body copy
+- **Monospace** for code, numbers, and technical details
 
-Fontsource packages download the font into your build and generate local CSS. For a variable family:
+You may only use the sans serif and monospace roles in the first version, but
+choosing all three makes the system intentional and gives the agent clear
+boundaries.
+
+## Self-Hosted Fonts
+
+The starter uses self-hosted fonts through [Fontsource](https://fontsource.org/).
+This is faster and more predictable than loading Google Fonts at runtime: the
+font is bundled with the app, served from the app's own origin, and does not
+require a request to a third-party font CDN.
+
+For example:
 
 ```sh
 pnpm --filter @mern/client add @fontsource-variable/inter
 ```
 
-Import it once in `apps/client/src/main.tsx`:
+Import the family once in `apps/client/src/main.tsx`:
 
 ```ts
 import "@fontsource-variable/inter";
 ```
 
-Set the matching family in `src/styles.css`:
+Then assign it to a semantic token in `apps/client/src/styles.css`:
 
 ```css
 @theme inline {
   --font-sans: "Inter Variable", Inter, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, monospace;
 }
 ```
 
-Replace `inter` with the Fontsource family chosen for the project. Static families use `@fontsource/<family>`; import only the weights and styles the UI actually uses. Do not import a family from Google Fonts at runtime.
+Use `@fontsource/<family>` for static families and import only the weights and
+styles the UI needs. Do not import a font from Google Fonts at runtime.
 
-## Local files
+## Licensed fonts
 
-For a font you have a licence to distribute, put `.woff2` files in `public/fonts` and declare them with `@font-face`. Use `font-display: swap`, a correct `unicode-range` when available, and a variable `font-weight` range when the file is variable. Never commit an unlicensed font.
+For a font that you are licensed to distribute, put `.woff2` files in
+`apps/client/public/fonts` and define `@font-face` with `font-display: swap`.
+Never commit a font without permission to redistribute it.
 
-## Verification
+## Let the agent do the rest
 
-Build the client and confirm the generated assets contain the font files. In the browser network panel, a font request should resolve to the app's own origin. Check fallback rendering, keyboard focus, 200% zoom, and long headings. `shadcn apply --only font` can help implement a shadcn preset, but `DESIGN.md` remains the source of truth.
+The design system only asks you for the durable choices: the three typeface
+roles, the general personality, and any fonts you must use. Once those are
+decided, the AI agent can choose the scale, weights, line height, spacing,
+fallbacks, and where each role is applied. Review the result in `DESIGN.md`
+instead of answering a giant typography questionnaire.
+
+Related: [Design and UI](/build/design-system), [Typography skill](/reference/skills).

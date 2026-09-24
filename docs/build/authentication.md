@@ -5,113 +5,149 @@ description: Configure Better Auth for email/password auth, use its session on t
 
 # Authentication with Better Auth
 
-This starter kit uses [Better Auth](https://better-auth.com) for authentication. It's widely considered the best TypeScript auth library available. It's free, open source, and you keep full control of your data. Better Auth handles users, accounts, sessions, and verification records through its MongoDB adapter. Keep your application data in separate Mongoose models; don't create a competing `User` model or write directly to Better Auth collections.
+The starter kit uses Better Auth for authentication and authorization. Better Auth was chosen as it's considered the best TypeScript authentication library currently available, is free and open-source and you keep control of your own data.
 
-## Environment
+Better Auth owns users, accounts, sessions, and verification records. Keep application data in separate Mongoose models, and do not create a second authentication `User` model.
 
-Add these to `.env` at the repository root:
+## Configure authentication
 
-```bash
-APP_URL=https://mern.localhost
-BETTER_AUTH_URL=https://mern.localhost
+### Environment
 
-# Generate with: openssl rand -base64 32
+After copying `.env.example` to `.env`, the local URLs are already correct. For a normal
+local setup, the only value you need to add is `BETTER_AUTH_SECRET`:
+
+```dotenv
 BETTER_AUTH_SECRET=
 ```
 
-`APP_URL` and `BETTER_AUTH_URL` must match exactly in this same-origin template. `BETTER_AUTH_SECRET` must be at least 32 characters. Generate it once and keep it private.
+Generate the value with the Node.js command in [Development workflow](/installation/development-workflow/#environment-variables).
 
-## Project structure
+Generate it once, paste the result into `.env`, and keep it private. Change the other
+values in `.env.example` only when you are using a different MongoDB server, local URL,
+or deployment environment. `APP_URL` and `BETTER_AUTH_URL` must match in this
+same-origin starter.
 
-```
+### Project structure
+
+```text
 apps/server/src/
-  auth.ts           # Better Auth server instance + plugin config
+  auth.ts           # Better Auth server instance and plugin configuration
   middleware/
-    auth.ts         # Express middleware: authMiddleware
-  routes/
-    auth.ts         # Mounts Better Auth handler at /api/auth/*
+    auth.ts         # Express session middleware
 
 apps/client/src/
   lib/
-    auth-client.ts  # Better Auth client with inferred types
-  hooks/
-    use-session.ts  # React hook for session state
+    auth-client.ts  # Better Auth client
 ```
 
-## Server configuration
+### Server configuration
 
 The server creates the Better Auth instance in `apps/server/src/auth.ts`:
 
-```ts
-// apps/server/src/auth.ts
+```ts title="apps/server/src/auth.ts"
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { database } from "./database";
+import mongoose from "mongoose";
+import type { Config } from "./config.ts";
 
-export const auth = betterAuth({
-  database: mongodbAdapter(database),
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
-  },
-  // Add plugins here:
-  // magicLink: { enabled: true },
-  // oAuth2: { github: { clientId: "...", clientSecret: "..." } },
-});
+export function createAuth(config: Config) {
+  const db = mongoose.connection.db;
+  if (!db) throw new Error("Connect to MongoDB before initializing authentication");
+
+  return betterAuth({
+    appName: "MERN starter",
+    database: mongodbAdapter(db),
+    baseURL: config.authUrl,
+    secret: config.secret,
+    trustedOrigins: [config.appUrl],
+    advanced: { ipAddress: { ipAddressHeaders: ["x-mern-client-ip"] } },
+    emailAndPassword: { enabled: true, minPasswordLength: 8, maxPasswordLength: 128 },
+    rateLimit: { enabled: true, storage: "database" },
+  });
+}
 ```
 
-## Client configuration
+Keep the existing URL, secret, trusted origin, client IP handling, password limits, and rate limit when you add a feature. The standalone local MongoDB server has no multi-document transactions; use a replica set and pass its client to the adapter if a later feature needs them.
 
-The client lives in `apps/client/src/lib/auth-client.ts` and infers types from the server config:
+### Client configuration
 
-```ts
-// apps/client/src/lib/auth-client.ts
+The client lives in `apps/client/src/lib/auth-client.ts`:
+
+```ts title="apps/client/src/lib/auth-client.ts"
 import { createAuthClient } from "better-auth/react";
 
-export const authClient = createAuthClient({
-  baseURL: import.meta.env.VITE_APP_URL,
-});
+export const authClient = createAuthClient();
 ```
 
-## Using sessions in components
+## Use sessions
 
-The `useSession` hook (in `apps/client/src/hooks/use-session.ts`) gives you reactive session state:
+### In components
+
+Use the client where a component needs the current session:
 
 ```tsx
-import { useSession } from "@/hooks/use-session";
+import { authClient } from "@/lib/auth-client";
 
 function Profile() {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending } = authClient.useSession();
 
-  if (isPending) return <Skeleton />;
-  if (!session) return <SignInPrompt />;
+  if (isPending) return <p role="status">Loading session...</p>;
+  if (!session) return <p>Sign in to continue.</p>;
 
   return <div>Welcome, {session.user.name}</div>;
 }
 ```
 
-## Authentication middleware
+### In Express routes
 
 Protect Express routes with `authMiddleware`:
 
 ```ts
-// apps/server/src/routes/user.ts
-import { authMiddleware } from "../middleware/auth";
-import { auth } from "../auth";
+import { authMiddleware } from "./middleware/auth.ts";
 
 app.get("/api/me", authMiddleware(auth), (_req, res) => {
-  res.json({ user: res.locals.session.user });
+  const { id, name, email } = res.locals.session.user;
+  res.json({ user: { id, name, email } });
 });
-
 ```
 
-- `authMiddleware(auth)` reads cookies, returns `401` if no valid session, and attaches `res.locals.session`.
-- `adminMiddleware` checks for the `admin` role on the session; returns `403` for authenticated non-admins.
+`authMiddleware(auth)` reads the cookie, returns `401` when there is no valid session,
+and attaches the session to `res.locals` for the route handler.
 
 See [Middleware](/build/middleware) for the full implementation.
 
-## Reference
+### Handler order and client IP
 
-- [Better Auth Docs](https://better-auth.com/docs)
-- [Better Auth Plugin Reference](https://better-auth.com/docs/plugins)
-- [Better Auth React Client](https://better-auth.com/docs/client/react)
+`apps/server/src/app.ts` mounts `/api/auth/{*path}` before `express.json()` so Better Auth receives the original request body. The client uses the same public origin and sends session cookies with its `/api` requests.
+
+The starter enables database-backed rate limiting. It passes a trusted client IP header built after Express applies the configured `TRUST_PROXY` list. Only set that list to proxies you control.
+
+## Extensions and Plugins
+
+The starter kit is configured with Better Auth's email and password flow. Better Auth provides many plugins for common account features. Add the ones your product needs, then build the matching UI and email flow where applicable.
+
+```ts title="apps/server/src/auth.ts"
+import { admin, organization, twoFactor, username } from "better-auth/plugins";
+
+// Inside the existing betterAuth({ ... }) options:
+plugins: [
+  username(), // A username in addition to email.
+  twoFactor(), // Authenticator-app two-factor sign-in.
+  organization(), // Workspaces, members, roles, and invitations.
+  admin(), // Administrative user-management actions.
+],
+```
+
+Other common additions include social sign-in, magic links, passkeys, email verification, and password-reset emails.
+
+## Next step
+
+Continue to [Validation](/build/validation) to define trusted input for the widget example.
+
+## References
+
+- [Better Auth MongoDB adapter](https://better-auth.com/docs/adapters/mongo)
+- [Better Auth Express integration](https://better-auth.com/docs/integrations/express)
+- [Better Auth session management](https://better-auth.com/docs/concepts/session-management)
+- [Better Auth React client](https://better-auth.com/docs/client/react)
+- [Better Auth plugins](https://better-auth.com/docs/plugins)

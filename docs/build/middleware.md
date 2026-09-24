@@ -5,9 +5,11 @@ description: Compose Express middleware for authentication, Zod request validati
 
 # Express middleware
 
-Middleware handles work shared by several routes before the final handler runs. The starter keeps reusable middleware in `apps/server/src/middleware/` and uses `res.locals` for request-scoped, trusted data.
+The starter kit uses Express middleware for work shared by several routes before the final handler runs. The starter keeps reusable middleware in `apps/server/src/middleware/` and uses `res.locals` for request-scoped, trusted data.
 
-## Project structure
+## Request flow
+
+### Project structure
 
 ```text
 apps/server/src/
@@ -16,6 +18,8 @@ apps/server/src/
     auth.ts         # Validates the Better Auth session
     validate.ts     # Parses body, params, and query with Zod
 ```
+
+### Execution order
 
 The request flow is:
 
@@ -56,7 +60,9 @@ app.use(handleError);
 
 Keep Better Auth before `express.json()`. Add application routes after the JSON parser and before the API 404 handler. The four-argument error handler belongs last.
 
-## Authentication middleware
+## Route guards
+
+### Authentication middleware
 
 `authMiddleware(auth)` validates the session and exposes it as `res.locals.session`:
 
@@ -102,7 +108,7 @@ app.get("/api/me", authMiddleware(auth), (_req, res) => {
 
 See [Authentication](/build/authentication) for the complete auth flow.
 
-## Validation middleware
+### Validation middleware
 
 `validate()` accepts any combination of Zod schemas for `body`, `params`, and `query`:
 
@@ -121,7 +127,7 @@ It returns `400` with structured Zod errors when parsing fails. On success, pars
 
 See [Validation](/build/validation) for schemas, errors, inference, and tests.
 
-## Write a small custom middleware
+### Write a small custom middleware
 
 A middleware has three jobs: inspect the request, stop with a response when necessary, or call `next()` exactly once.
 
@@ -140,7 +146,9 @@ export const requireJson: RequestHandler = (req, res, next) => {
 
 Keep middleware focused. Business logic belongs in the route or feature code, while reusable trust-boundary checks belong here.
 
-## Error handling
+## Errors and verification
+
+### Error handling
 
 Express 5 automatically forwards rejected promises from async middleware and handlers to the error middleware. Let unexpected errors reach the central handler; do not expose raw database, dependency, stack, cookie, or request-body details to clients.
 
@@ -153,7 +161,7 @@ Expected failures should be answered where they are understood:
 
 The central handler is the fallback for malformed JSON, oversized bodies, and unexpected failures.
 
-## Test middleware
+### Test middleware
 
 Middleware is best tested through a small Express app with Supertest. Verify both branches: rejected requests return the expected status and accepted requests reach a handler with the expected `res.locals` value.
 
@@ -162,7 +170,7 @@ pnpm test:integration
 pnpm typecheck
 ```
 
-## Reference
+## References
 
 - [Express middleware guide](https://expressjs.com/en/guide/using-middleware.html)
 - [Express error handling](https://expressjs.com/en/guide/error-handling.html)

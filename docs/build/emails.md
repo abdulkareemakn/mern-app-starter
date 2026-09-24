@@ -5,13 +5,16 @@ description: Build React Email templates, inspect local messages with MailDev, a
 
 # Emails
 
-The starter separates email into three small pieces:
+This starter kit separates email authoring, local delivery, inspection, and production delivery:
 
-- React Email components define reusable templates.
-- MailDev captures development messages without sending real email.
-- Resend delivers messages in production.
+| Tool | Responsibility |
+| --- | --- |
+| React Email | Compose and preview HTML templates with React components |
+| Nodemailer | Send application messages to the local SMTP server during development |
+| MailDev | Capture those SMTP messages and show them in a browser inbox |
+| Resend | Deliver messages to real recipients in production |
 
-Application code calls one `sendEmail()` function and does not choose the provider itself.
+Application code calls `sendEmail()`; the helper selects Nodemailer or Resend from validated server configuration. A previewed template is not an email sent by the application. Inspect MailDev to verify the whole development flow.
 
 ## Project structure
 
@@ -28,18 +31,20 @@ apps/server/src/lib/
 
 ## Development URLs
 
-`pnpm dev` starts both email tools through Portless:
+The email tools use fixed localhost ports:
 
-| Tool | Public URL | Internal target |
+| Tool | Command | URL |
 | --- | --- | --- |
-| React Email preview | `https://emails.localhost` | `localhost:3002` |
-| MailDev inbox | `https://mail.localhost` | `localhost:3003` |
+| React Email preview | `pnpm dev:mail` | `http://localhost:3002` |
+| MailDev inbox | `pnpm dev` | `http://localhost:3003` |
 
 React Email previews templates while you edit them. MailDev shows messages actually sent by the application during development.
 
-The local SMTP server listens on `localhost:3025`. It is not a browser URL.
+The local SMTP server listens on `localhost:3025`.
 
-## Create a template
+## Author and send
+
+### Create a template
 
 Export a component from `packages/emails/` with explicit props:
 
@@ -77,17 +82,17 @@ export function WelcomeEmail({ name, loginUrl }: WelcomeEmailProps) {
 
 Use absolute URLs for links and images. Keep the props limited to values the template renders.
 
-## Preview templates
+### Preview templates
 
-Open `https://emails.localhost` while `pnpm dev` is running. The React Email development server reloads when a template changes.
+Run `pnpm dev:mail`, then open `http://localhost:3002`. The React Email development server reloads when a template changes.
 
-To run only the template preview without Portless:
+The equivalent package-level command is:
 
 ```sh
 pnpm --filter @mern/emails dev
 ```
 
-## Send an email
+### Send an email
 
 Import the provider-neutral helper from server code:
 
@@ -100,8 +105,10 @@ export type Email = {
   text?: string;
 };
 
-export function sendEmail(email: Email) {
-  return send(email);
+export function sendEmail(email: Email, config: Config) {
+  if (config.nodeEnv === "production")
+    return new Resend(config.resendApiKey).emails.send(email);
+  return nodemailer.createTransport({ host: "127.0.0.1", port: 3025 }).sendMail(email);
 }
 ```
 
@@ -116,16 +123,18 @@ await sendEmail({
   subject: "Welcome to Your App",
   html: "<p>Welcome to Your App!</p>",
   text: "Welcome to Your App!",
-});
+}, config);
 ```
 
 Validate recipients and template input before sending. Do not include secrets or raw request data in email logs.
 
 The React Email workspace is the visual template authoring and preview environment. Keep templates there while designing them. The server helper deliberately accepts rendered HTML, which keeps delivery code small and also supports HTML produced by React Email, a Markdown renderer, or a simple string template.
 
-## Inspect development messages
+## Verify delivery
 
-Outside production, `sendEmail()` uses SMTP at `127.0.0.1:3025`. MailDev captures the message and displays it at `https://mail.localhost`. Nothing is delivered to the real recipient.
+### Inspect development messages
+
+Outside production, `sendEmail()` uses SMTP at `127.0.0.1:3025`. MailDev captures the message and displays it at `http://localhost:3003`. Nothing is delivered to the real recipient.
 
 This lets integration work use realistic email content without requiring provider credentials or sending accidental messages.
 
@@ -134,12 +143,12 @@ This lets integration work use realistic email content without requiring provide
 1. Run `pnpm dev` once from the repository root.
 2. Write server code that calls `sendEmail()`.
 3. Trigger that code from the application or an integration test.
-4. Open `https://mail.localhost`.
+4. Open `http://localhost:3003`.
 5. Inspect the subject, recipients, HTML, text, and links.
 
 No API key, external account, or manually started SMTP process is required for this flow.
 
-## Production delivery
+### Production delivery
 
 When `NODE_ENV=production`, `sendEmail()` uses Resend. Set this secret in the deployment environment:
 
@@ -153,19 +162,20 @@ Configure and verify the sender domain in Resend before using it in the `from` f
 
 ```sh
 pnpm dev
+pnpm dev:mail
 ```
 
 Then:
 
-1. Open `https://emails.localhost` and verify the template renders.
+1. Open `http://localhost:3002` and verify the template renders.
 2. Trigger the application action that sends the message.
-3. Open `https://mail.localhost` and inspect the received HTML and text.
+3. Open `http://localhost:3003` and inspect the received HTML and text.
 4. Check links, subject, sender, recipient, and narrow-screen rendering.
 
-## Reference
+## References
 
 - [React Email](https://react.email/)
 - [MailDev](https://github.com/maildev/maildev)
 - [Resend Node SDK](https://resend.com/docs/send-with-nodejs)
-- [Environment variables](/build/environment-variables)
+- [Development workflow](/installation/development-workflow/#environment-variables)
 - [Middleware](/build/middleware)

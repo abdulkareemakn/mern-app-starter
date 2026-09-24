@@ -5,7 +5,7 @@ description: Add typed pages, loaders, links, path parameters, and search parame
 
 # Client pages with TanStack Router
 
-The client uses [TanStack Router](https://tanstack.com/router/latest) with file-based routing. Files in `apps/client/src/routes/` become URLs, and the generated route tree provides typed navigation, parameters, search values, and loader data.
+This starter kit uses [TanStack Router](https://tanstack.com/router/latest) with file-based routing. Files in `apps/client/src/routes/` become URLs, and the generated route tree provides typed navigation, parameters, search values, and loader data.
 
 ## Project structure
 
@@ -21,7 +21,9 @@ apps/client/src/
   routeTree.gen.ts      # Generated route tree, do not edit
 ```
 
-## Create a page
+## Add widget pages
+
+### Create a page
 
 Create a file in `apps/client/src/routes/` and export a constant named `Route`:
 
@@ -41,9 +43,7 @@ function WidgetsPage() {
 }
 ```
 
-The file creates `/widgets`. Keep page-specific code beside the route until it becomes large enough to extract.
-
-## Generated route types
+### Generated route types
 
 TanStack Router generates `apps/client/src/routeTree.gen.ts` during development, builds, and type checking. Commit this file, but never edit it manually.
 
@@ -53,7 +53,7 @@ Regenerate it explicitly when needed:
 pnpm --filter @mern/client generate-routes
 ```
 
-## Link between pages
+### Link between pages
 
 Use `Link` for internal navigation:
 
@@ -65,7 +65,7 @@ import { Link } from "@tanstack/react-router";
 
 TypeScript checks the destination and any required parameters against the generated route tree.
 
-## Dynamic paths
+### Dynamic paths
 
 Create `widgets.$id.tsx` for `/widgets/:id`:
 
@@ -92,19 +92,21 @@ Link to it with typed parameters:
 
 Path parameters are strings in the browser. Validate or coerce them again when they reach the API.
 
-## Load API data
+## Load and filter data
+
+### Load API data
 
 Use a route loader when the page needs data before rendering:
 
 ```tsx title="apps/client/src/routes/widgets.tsx"
 import type { WidgetListResponse } from "@mern/shared";
 import { createFileRoute } from "@tanstack/react-router";
+import axios from "axios";
 
 export const Route = createFileRoute("/widgets")({
   loader: async () => {
-    const response = await fetch("/api/widgets");
-    if (!response.ok) throw new Error("Unable to load widgets");
-    return (await response.json()) as WidgetListResponse;
+    const { data } = await axios.get<WidgetListResponse>("/api/widgets");
+    return data;
   },
   pendingComponent: () => <p role="status">Loading widgets...</p>,
   errorComponent: () => (
@@ -135,7 +137,7 @@ function WidgetsPage() {
 
 This starter is a client-rendered Vite application. Loaders run in the browser during navigation. Requests to `/api` use Vite's same-origin proxy in development, so session cookies are included without a separate API origin or CORS setup.
 
-## Search parameters
+### Search parameters
 
 Use `validateSearch` to give query-string values a stable type and default:
 
@@ -172,7 +174,7 @@ See [404 page](/build/not-found-page) before changing the fallback.
 
 ## Verify
 
-Run the client, open `https://mern.localhost/widgets`, and check its loading, empty, success, and error states. Then run:
+Run the client, open `http://localhost:3000/widgets`, and check its loading, empty, success, and error states. Then run:
 
 ```sh
 pnpm --filter @mern/client generate-routes
@@ -180,7 +182,11 @@ pnpm typecheck
 pnpm check
 ```
 
-## Reference
+## Next step
+
+Continue to [Emails](/build/emails) when a feature needs to notify someone.
+
+## References
 
 - [TanStack Router documentation](https://tanstack.com/router/latest)
 - [File-based routing](https://tanstack.com/router/latest/docs/framework/react/routing/file-based-routing)

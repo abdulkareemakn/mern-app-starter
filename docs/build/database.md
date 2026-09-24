@@ -5,7 +5,16 @@ description: Connect to MongoDB, create Mongoose models, and use them safely fro
 
 # Database with MongoDB and Mongoose
 
-The server uses [Mongoose](https://mongoosejs.com/) to connect to MongoDB. Add models for application data only. Better Auth owns its user, account, session, and verification collections.
+The starter kit stores the application data in MongoDB.
+
+[Mongoose](https://mongoosejs.com/) is an ODM (Object Document Mapper) that makes MongoDB documents easier to describe and query from TypeScript. It is chosen here for its mature MongoDB model API and schema
+constraints.
+
+!!! note "Validation and database constraints solve different problems"
+
+    Zod is used for input validation at the application level while Mongoose protects write access at the database
+    level. It's a good habit to adopt both.
+
 
 ## Project structure
 
@@ -26,8 +35,8 @@ MONGODB_URI=mongodb://127.0.0.1:27017/mern
 ```
 
 For a hosted environment, use a managed URI such as MongoDB Atlas (`mongodb+srv://...`).
-Follow the [Atlas deployment guide](../deployment/mongodb-atlas.md) for database users,
-network access, backups, and production separation.
+Configure database users, network access, backups, and production separation for the
+managed service you choose.
 
 Start MongoDB locally:
 
@@ -43,7 +52,9 @@ Start MongoDB locally:
 
 The server connects before accepting requests. Startup fails if MongoDB is unavailable, and graceful shutdown closes the connection.
 
-## Create a model
+## Development Workflow
+
+### Create a model
 
 Create `apps/server/src/models/widget.ts`:
 
@@ -60,11 +71,11 @@ const widgetSchema = new mongoose.Schema(
 export const Widget = mongoose.model("Widget", widgetSchema);
 ```
 
-Mongoose infers the document type from the schema. The singular model name becomes the `widgets` collection. Do not call `mongoose.connect()` in model files; the application already owns one shared connection.
+Mongoose infers the document type from the schema. The singular model name becomes the `widgets` collection.
 
 Schema constraints protect every write path, but they do not replace request validation. Validate at the HTTP boundary so invalid input receives a useful `400` response before it reaches MongoDB.
 
-## Write from a validated route
+### Write from a validated route
 
 ```ts title="apps/server/src/app.ts"
 app.post(
@@ -80,9 +91,7 @@ app.post(
 );
 ```
 
-The route uses Zod's parsed output, not the original request body. See [Validation](/build/validation) for the schema and middleware pattern.
-
-## Read plain objects
+### Read plain objects
 
 Use `.lean()` when a read-only response does not need Mongoose document methods:
 
@@ -101,7 +110,9 @@ app.get("/api/widgets", async (_req, res) => {
 
 Map database fields to an explicit API response instead of returning MongoDB documents directly. This keeps `_id`, internal fields, and future schema changes out of the public contract.
 
-## Relate records to authenticated users
+## Ownership and integrity
+
+### Relate records to authenticated users
 
 When records need ownership, add an indexed `ownerId` field to the model and store Better Auth's user ID on each record:
 
@@ -112,7 +123,7 @@ const widgets = await Widget.find({ ownerId }).lean();
 
 Do not create a second user model for authentication or write directly to Better Auth collections. Add a separate profile model only when the application needs data that does not belong in authentication records.
 
-## Indexes and uniqueness
+### Indexes and uniqueness
 
 Add indexes for real query and uniqueness requirements:
 
@@ -139,7 +150,11 @@ pnpm test:integration
 pnpm typecheck
 ```
 
-## Reference
+## Next step
+
+Continue to [Authentication](/build/authentication) if records need an owner, then define the widget input in [Validation](/build/validation).
+
+## References
 
 - [Mongoose schemas](https://mongoosejs.com/docs/guide.html)
 - [Mongoose connections](https://mongoosejs.com/docs/connections.html)

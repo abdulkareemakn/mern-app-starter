@@ -1,178 +1,84 @@
 ---
 title: Validation
-description: Validate Express request bodies, URL parameters, and query strings with reusable Zod 4 middleware.
+description: Validate request data with Zod before application code uses it.
 ---
 
-# Request validation with Zod
+# Validation
 
-Every value sent by a client is untrusted. This starter uses [Zod 4](https://zod.dev/) at the API boundary and a small `validate()` middleware so route handlers only receive parsed data.
+This starter kit uses Zod to check data at the Express boundary. Browser forms help people enter valid values, but any client can send an API request. A schema checks the value at runtime and supplies its TypeScript type.
 
-The schema is the single source of truth: it performs runtime validation and produces the TypeScript type.
+The example feature throughout this section is a widget with a name. The starter already includes a separate `create-user.ts` example and `/api/example/users` route; the widget code below is a guide to add, not an endpoint that ships today.
 
-## Project structure
+## Define a request schema
 
-```text
-apps/server/src/
-  middleware/
-    validate.ts             # Reusable body, params, and query validation
-  schemas/
-    create-user.ts          # Schema and inferred output type
-  app.ts                    # Routes use validate(...)
-```
+Create `apps/server/src/schemas/create-widget.ts`:
 
-## Create a schema
-
-Keep request schemas in `apps/server/src/schemas/`:
-
-```ts title="apps/server/src/schemas/create-user.ts"
+```ts
 import * as z from "zod";
 
-export const createUserSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  email: z.email("Enter a valid email address"),
-  age: z.number().int().min(13, "Age must be at least 13"),
+export const createWidgetSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100),
 });
 
-export type CreateUser = z.infer<typeof createUserSchema>;
+export type CreateWidget = z.infer<typeof createWidgetSchema>;
 ```
 
-Do not repeat this shape as a separate request interface. `CreateUser` is Zod's parsed output type and stays synchronized with the schema.
+The inferred type describes parsed output.
 
-## Validate a request body
+## Validate the route
 
-Pass the schema to `validate()` and use `res.locals.validated.body` in the handler:
+`validate()` in `apps/server/src/middleware/validate.ts` accepts `body`, `params`, and `query` schemas. It sends HTTP `400` with `{ error, details }` on failure. On success, it places parsed values in `res.locals.validated`:
 
-```ts title="apps/server/src/app.ts"
+```ts
 app.post(
-  "/api/example/users",
-  validate({ body: createUserSchema }),
-  (_req, res) => {
-    const user: CreateUser = res.locals.validated.body;
-    res.status(201).json({ user });
+  "/api/widgets",
+  validate({ body: createWidgetSchema }),
+  async (_req, res) => {
+    const input: CreateWidget = res.locals.validated.body;
+    const widget = await Widget.create(input);
+    res.status(201).json({ widget: { id: widget.id, name: widget.name } });
   },
 );
 ```
 
-The middleware calls `next()` only after validation succeeds. Invalid data receives a `400 Bad Request` response and never reaches the handler.
+Use the parsed value. Reading `req.body` again loses trimming, defaults, coercion, and any other schema transforms.
 
-## Use parsed output
+## Validate other request values
 
-Always read from `res.locals.validated`, not the original `req.body`, `req.params`, or `req.query`. Zod may change the value while parsing:
+Parameters and search values arrive as strings. Pass schemas for them when the route uses them:
 
 ```ts
-const paginationSchema = z.object({
+const widgetParamsSchema = z.object({ id: z.string().min(1) });
+const listQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
-  search: z.string().trim().optional(),
-});
-```
-
-For `?page=2&search=%20Ada%20`, the handler receives:
-
-```ts
-{ page: 2, search: "Ada" }
-```
-
-That preserves coercion, trimming, defaults, transforms, and stripped keys instead of returning to untrusted request values.
-
-## Validate URL parameters
-
-Express URL parameters start as strings. Coerce them when the application needs another type:
-
-```ts
-export const userParamsSchema = z.object({
-  id: z.coerce.number().int().positive(),
 });
 
 app.get(
-  "/api/users/:id",
-  validate({ params: userParamsSchema }),
-  (_req, res) => {
-    const { id } = res.locals.validated.params; // number
-    res.json({ id });
-  },
+  "/api/widgets/:id",
+  validate({ params: widgetParamsSchema, query: listQuerySchema }),
+  (_req, res) => res.json(res.locals.validated),
 );
 ```
 
-## Validate query parameters
+That last handler illustrates parsed values, not a widget lookup. Implement the database query and response contract before publishing such a route. Express 5 exposes `req.query` through a getter, so the middleware stores parsed data in `res.locals` rather than replacing `req.query`.
 
-```ts
-export const paginationSchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-});
+## Handle errors and types
 
-app.get(
-  "/api/users",
-  validate({ query: paginationSchema }),
-  (_req, res) => listUsers(res.locals.validated.query),
-);
-```
+Validation failures identify the target, such as `Invalid request body`, and format Zod issues with `z.flattenError()`. Inline handlers infer the parsed type from `validate()`. If a handler is extracted, use `ValidatedLocals<typeof schemas>` from the same middleware instead of duplicating the request shape.
 
-## Validate multiple inputs
+Mongoose constraints still protect writes from other code paths.
 
-One middleware call can validate several request targets:
+## Verify
 
-```ts
-app.patch(
-  "/api/users/:id",
-  validate({
-    params: userParamsSchema,
-    body: updateUserSchema,
-  }),
-  (_req, res) => {
-    const { id } = res.locals.validated.params;
-    const updates = res.locals.validated.body;
-    res.json({ id, updates });
-  },
-);
-```
+Add an integration check for a valid widget name and for whitespace-only input. Confirm that the saved name is trimmed and the invalid request never writes a record. Then run `pnpm test:integration` and `pnpm typecheck`.
 
-Use the same form for `body`, `params`, and `query`; there is no route-level `safeParse()` to repeat.
+## Next step
 
-## Validation errors
+Continue to [API routes](/build/api-routes) to write and read widgets through Express.
 
-The middleware uses Zod 4's `z.flattenError()` and identifies the failed request target:
-
-```json
-{
-  "error": "Invalid request body",
-  "details": {
-    "formErrors": [],
-    "fieldErrors": {
-      "email": ["Enter a valid email address"]
-    }
-  }
-}
-```
-
-Parameter and query failures use `Invalid request params` and `Invalid request query`. Validation responses are produced by the middleware; unexpected errors continue to the central Express error handler.
-
-## TypeScript inference
-
-Inline route handlers infer `res.locals.validated` from the schemas passed to `validate()`. Zod transformations infer their output type, not their original input type.
-
-Express cannot always carry a middleware's generic type into a separately declared handler. If you extract the handler, export the schema object and use `ValidatedLocals<typeof schemas>` from `middleware/validate.ts`. This still derives the type from Zod and does not duplicate the request shape.
-
-## Test validation
-
-Use Supertest to send real HTTP input through Express. Cover:
-
-- a valid request;
-- each important invalid boundary;
-- parsed output such as trimming, coercion, or defaults;
-- routes that validate more than one target; and
-- confirmation that invalid data never reaches the handler.
-
-```sh
-pnpm test:integration
-pnpm typecheck
-```
-
-Database constraints remain a useful second line of defence for every write path. They do not replace request validation because other services may consume the value first, and database errors do not provide a consistent client response.
-
-## Reference
+## References
 
 - [Zod basics](https://zod.dev/basics)
 - [Zod error formatting](https://zod.dev/error-formatting)
+- [Express middleware](/build/middleware)
 - [API routes](/build/api-routes)
-- [Middleware](/build/middleware)

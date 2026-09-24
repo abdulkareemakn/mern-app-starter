@@ -5,7 +5,7 @@ description: Format the entire workspace consistently with the root Biome config
 
 # Formatting with Biome
 
-The workspace uses [Biome](https://biomejs.dev/) for formatting. One root `biome.json` applies to the client, server, shared packages, tests, and configuration files.
+This starter kit uses [Biome](https://biomejs.dev/) for formatting. One root `biome.json` applies to the client, server, shared packages, tests, and configuration files.
 
 ## Format the workspace
 
@@ -89,7 +89,7 @@ Add an option only when the project needs a stable rule that differs from Biome'
 
 After changing a global rule, run `pnpm format`, review the full diff, and commit the configuration and mechanical changes together.
 
-## Reference
+## References
 
 - [Biome formatter](https://biomejs.dev/formatter/)
 - [Biome configuration](https://biomejs.dev/reference/configuration/)

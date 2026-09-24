@@ -1,51 +1,48 @@
 ---
-title: Build your app
-description: The application pieces in the starter, from Better Auth and MongoDB to routes, UI, email, and configuration.
+title: Development
+description: Build the application one connected concern at a time, from identity and data to routes, pages, and email.
 ---
 
 # Build your app
 
-Each page covers one application concern. Establish the visual system first, then add the concern you need; pages link to adjacent pieces when a change crosses a boundary.
+Build in the same order your users experience the product. Start with the data your feature owns, then decide who can access it. Validate each request before an API route writes data. Add a client page once the server contract is clear.
+
+You do not need every page for every feature. A public read-only page, for example,
+may only need a route and database query. Start with the smallest relevant path.
 
 <div class="grid cards" markdown>
 
-- [__Authentication__](/build/authentication)
-
-    Configure Better Auth and protect data on the server.
 - [__Database__](/build/database)
 
     Add application models with Mongoose.
-- [__API routes__](/build/api-routes)
+- [__Authentication__](/build/authentication)
 
-    Define a contract, implement an Express handler, and call it from the client.
+    Configure Better Auth and protect data on the server.
 - [__Validation__](/build/validation)
 
     Check untrusted request data before it reaches the database or another service.
+- [__API routes__](/build/api-routes)
+
+    Define a contract, implement an Express handler, and call it from the client.
 - [__Client pages__](/build/client-pages)
 
     Add typed TanStack Router pages and loaders.
-- [__Middleware__](/build/middleware)
-
-    Reuse authentication and authorization guards.
 - [__Emails__](/build/emails)
 
     Render React Email templates and send them with Resend.
-- [__shadcn/ui__](/build/shadcn-ui)
+- [__Middleware__](/build/middleware)
 
-    Add and customize UI components.
-- [__Design system__](/build/design-system)
-
-    Make a few visual choices and derive a coherent `DESIGN.md`.
-- [__Fonts__](/build/fonts)
-
-    Self-host Fontsource or licensed local font files.
-- [__Agent skills__](/build/agent-skills)
-
-    Understand the project-local guidance used by coding agents.
-- [__Environment variables__](/build/environment-variables)
-
-    Configure the server without exposing secrets.
+    Reuse authentication and authorization guards.
 - [__404 page__](/build/not-found-page)
 
     Customize the screen shown for an unknown URL.
 </div>
+
+## Next step
+
+Start with [Database](/build/database), then follow the widget example through Validation, API routes, and Client pages.
+
+## References
+
+- [Project structure](/installation/project-structure)
+- [Development workflow](/installation/development-workflow)

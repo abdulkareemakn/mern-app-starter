@@ -5,7 +5,7 @@ description: Build the production image or run the complete application and Mong
 
 # Docker
 
-The included multi-stage `Dockerfile` builds the client and server, then creates a
+This starter kit includes a multi-stage `Dockerfile` that builds the client and server, then creates a
 smaller production image that runs as the non-root `node` user. Environment files are
 excluded from the image; provide secrets only at runtime.
 
@@ -24,8 +24,7 @@ MongoDB instance plus the production settings from [Production build](/deploymen
 
 ## Run the complete stack
 
-For a single host, copy `.env.example` to `.env`, set `BETTER_AUTH_SECRET`, and set both
-public URL variables to your real HTTPS origin. Then run:
+For a local stack, copy `.env.example` to `.env`. Set a generated `BETTER_AUTH_SECRET`, set `RESEND_API_KEY`, and set both `APP_URL` and `BETTER_AUTH_URL` to `http://localhost:3000`. For a public host, use its real HTTPS origin for both URLs and provide the secrets through the host. Then run:
 
 ```sh
 pnpm docker:up
@@ -33,7 +32,7 @@ pnpm docker:up
 
 This runs `compose.yaml`: one app image, Express serving the SPA and API, and MongoDB
 on an internal network with a persistent volume. The app is published on port 3000 by
-default; change `APP_PORT` to use another host port. Stop `pnpm dev` first if it is using
+default; change `APP_PORT` to use another host port. Stop `pnpm dev:ui` first if it is using
 that port.
 
 ## Data and volumes
@@ -62,7 +61,16 @@ It runs MongoDB 8.0 with a health check and exposes port 27017 only on loopback.
 ## What the template does not do
 
 This is a single-host reference. It does not provision DNS, TLS, backups, or a managed
-database. For production, use [MongoDB Atlas](mongodb-atlas.md) instead of the Compose
+database. For production, use MongoDB Atlas instead of the Compose
 database when you need managed backups and availability: set `MONGODB_URI` to the Atlas
 SRV URI and do not expose a local MongoDB port. Put the app behind your provider's HTTPS
 ingress or reverse proxy and inject secrets through the deployment platform.
+
+## Next step
+
+Use the [Security checklist](/reference/security-checklist) before exposing the stack to users.
+
+## References
+
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Security checklist](/reference/security-checklist)

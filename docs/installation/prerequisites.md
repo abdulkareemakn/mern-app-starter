@@ -5,7 +5,7 @@ description: Install Node.js 24+, pnpm 11.3.0, and a local MongoDB server before
 
 # Prerequisites
 
-You need Git, Node.js 24 or newer, pnpm 11.3.0, and MongoDB. On Windows, install
+This starter kit needs Git, Node.js 24 or newer, pnpm 11.3.0, and MongoDB. On Windows, install
 MongoDB Community Server directly; on macOS and Linux, run it with Docker Compose.
 A GitHub account is only needed if you plan to publish the repository or deploy the
 documentation site.
@@ -16,7 +16,7 @@ Node.js 24+ is required.
 
 === "Windows"
 
-    ```sh
+    ```powershell
     winget install --id Git.Git
     winget install -e --id OpenJS.NodeJS
     ```
@@ -30,13 +30,25 @@ Node.js 24+ is required.
 === "Ubuntu / Debian / Mint"
 
     ```sh
-    sudo apt install git nodejs npm
+    sudo apt install git
+    ```
+
+    Install Node.js 24 or newer from the [official Node.js downloads](https://nodejs.org/en/download) and verify `node --version`. The distribution package may be older than the required version.
+
+    ```sh
+    node --version
     ```
 
 === "Fedora / RHEL"
 
     ```sh
-    sudo dnf install git nodejs npm
+    sudo dnf install git
+    ```
+
+    Install Node.js 24 or newer from the [official Node.js downloads](https://nodejs.org/en/download) and verify `node --version`. The distribution package may be older than the required version.
+
+    ```sh
+    node --version
     ```
 
 Official install instructions: [Git](https://git-scm.com/downloads) · [Node.js](https://nodejs.org/en/download)
@@ -91,3 +103,9 @@ Use any editor with TypeScript support. The repository includes shared settings 
 ## Next steps
 
 Continue to [Installation](/installation/installation).
+
+## References
+
+- [Git](https://git-scm.com/downloads)
+- [Node.js](https://nodejs.org/en/download)
+- [MongoDB Community Server](https://www.mongodb.com/try/download/community)

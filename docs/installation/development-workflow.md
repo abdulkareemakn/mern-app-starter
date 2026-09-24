@@ -5,43 +5,57 @@ description: The commands you run while building, including dev servers, type ch
 
 # Development workflow
 
-Run the commands below from the repository root. The usual loop is: start the
-services, make a change, type-check and format it, then run the relevant tests.
+This starter kit gives each local service a fixed localhost port and keeps interactive tools in separate terminals. Return to this page while you work. The normal loop is simple: run the app,
+make one focused change, check it, then run the smallest test that can prove it works.
+
+## Environment variables
+
+The root `.env` file holds settings that change between your computer, tests, and a
+production host. Copy the safe template once:
+
+=== "Windows PowerShell"
+
+    ```powershell
+    Copy-Item .env.example .env
+    ```
+
+=== "macOS / Linux"
+
+    ```sh
+    cp .env.example .env
+    ```
+
+Generate a value for `BETTER_AUTH_SECRET` and paste it into `.env`:
+
+```sh
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
+```
+
+`MONGODB_URI` identifies the application database. `TEST_MONGODB_URI` is deliberately
+separate because test runs create and remove temporary databases. `APP_URL` and
+`BETTER_AUTH_URL` must be the same public origin in this starter. Do not put a secret,
+database URL, or API key in a variable beginning with `VITE_`: Vite exposes those to
+browser code.
+
+!!! warning "Keep `.env` private"
+
+    Commit `.env.example`, never `.env`. Production hosts should inject the same values
+    through their secret settings instead of copying a development file.
 
 ## Start the workspace
 
 ```sh
 pnpm dev
+pnpm dev:ui
 ```
 
-This starts the client, API, and email preview through Portless:
+Run these commands in separate terminals:
 
-- `https://mern.localhost`
-- `https://api.mern.localhost`
-- `https://emails.localhost`
-- `https://mail.localhost`
+- `pnpm dev`: API on `http://localhost:3001`, MailDev inbox on `http://localhost:3003`, and SMTP on `localhost:3025`
+- `pnpm dev:ui`: interactive Vite client on `http://localhost:3000`
+- `pnpm dev:mail`: optional React Email preview on `http://localhost:3002`
 
-Portless terminates local TLS while the processes receive plain HTTP. Their names and fixed internal ports are defined in `portless.json`.
-
-On first use, approve the certificate-authority prompt. If you skip it, run:
-
-```sh
-pnpm exec portless trust
-```
-
-To run one app only, use `pnpm --filter @mern/client dev` or
-`pnpm --filter @mern/server dev`.
-
-To bypass Portless temporarily, run:
-
-```sh
-PORTLESS=0 pnpm dev
-```
-
-The direct client server uses its usual localhost port. Change
-both `APP_URL` and `BETTER_AUTH_URL` to `http://localhost:3000` in `.env` for
-this mode. Use `pnpm exec portless doctor` to diagnose certificates, hostname
-resolution, routes, and proxy state.
+Each command owns its terminal. Press Ctrl+C there to stop its processes; Vite's keyboard commands work in the `pnpm dev:ui` terminal.
 
 ## Type check while you work
 
@@ -68,17 +82,16 @@ and [linter](https://biomejs.dev/linter/) documentation.
 
 ```sh
 pnpm test
-pnpm test:integration
+pnpm test:e2e
 ```
 
 `pnpm test` runs the Vitest unit suite followed by the API integration suite.
-Integration tests use Supertest and create a randomly named `mern_test_*`
-database when persistence is required. See [Commands](/reference/commands) and
-[Testing](/quality/testing) for the current test commands and database setup.
+`pnpm test:e2e` runs the Playwright browser suite. Integration and E2E tests use
+separate randomly named databases when persistence is required. See
+[Commands](/reference/commands) and [Testing](/quality/testing) for the current test
+commands and database setup.
 
-See [Testing](/quality/testing) for the database and test-data expectations.
-
-## Build and preview
+## Build and run
 
 ```sh
 pnpm build
@@ -89,9 +102,13 @@ pnpm start
 server; use the Docker commands in [Deployment](/deployment) for the complete
 production-style stack.
 
-For TypeScript's compiler behavior, see the official
-[TypeScript handbook](https://www.typescriptlang.org/docs/handbook/).
+## Next step
 
-## Next steps
+Continue to [Project structure](/installation/project-structure) to locate the code each command affects.
 
-Next, browse [Build your app](/build) or [Commands](/reference/commands).
+## References
+
+- [Node environment files](https://nodejs.org/api/environment_variables.html#env-files)
+- [Vite environment variables](https://vite.dev/guide/env-and-mode)
+- [Commands](/reference/commands)
+- [Testing](/quality/testing)

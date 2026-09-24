@@ -5,7 +5,7 @@ description: Build the workspace and run the Express server that serves both the
 
 # Production build
 
-In production, one Express process serves the built React app and its `/api` routes from
+This starter kit uses one Express process in production. That process serves the built React app and its `/api` routes from
 the same origin. Build from the repository root, then point your HTTPS proxy or
 platform at that process.
 
@@ -33,11 +33,11 @@ BETTER_AUTH_SECRET=replace-with-a-random-secret-at-least-32-characters-long
 RESEND_API_KEY=re_example
 ```
 
-Generate the secret once with `openssl rand -base64 32`. `APP_URL` and
+Generate the secret once with the Node.js command in [Development workflow](/installation/development-workflow/#environment-variables). `APP_URL` and
 `BETTER_AUTH_URL` must be the identical public HTTPS origin. `RESEND_API_KEY`
 is required in production because email is sent through Resend. The host may
 inject these values directly; a deployed `.env` file is not required. See
-[environment variables](/build/environment-variables) for the full reference.
+[Development workflow](/installation/development-workflow/#environment-variables) for the full reference.
 
 ## Run
 
@@ -62,3 +62,8 @@ curl https://app.example.com/api/health
 ```
 
 If it returns `503`, check the MongoDB URL, network access, and database credentials.
+
+## References
+
+- [Node.js production guidance](https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production)
+- [Security checklist](/reference/security-checklist)

@@ -5,8 +5,7 @@ description: The starter's HTTP surface, including health, the session-protected
 
 # API endpoints
 
-These are the routes the template ships. Add feature routes alongside the existing
-server route modules and keep their request/response contracts documented here.
+These are the routes the template ships. Add feature routes to `apps/server/src/app.ts` and keep their request/response contracts documented here.
 
 ## Health
 
@@ -17,6 +16,10 @@ server route modules and keep their request/response contracts documented here.
 
 `GET /api/me` requires a session and returns `{ user: { id, name, email } }`. Without a
 valid session it returns `401` with the standard `ApiError` body.
+
+## Example user route
+
+`POST /api/example/users` is the shipped validation example. It accepts a JSON body with `name`, `email`, and `age`, returns `201 { user: ... }` on success, and returns `400 { error, details }` for invalid input. It does not write a user to MongoDB or create a Better Auth account.
 
 ## Authentication routes
 
@@ -33,3 +36,9 @@ to the SPA fallback.
 The error middleware returns `413` for oversized bodies, `400` for malformed JSON, and
 `500` for unexpected failures. Internal logs omit request bodies, cookies, and database
 URLs.
+
+## References
+
+- [Express routing](https://expressjs.com/en/guide/routing.html)
+- [API routes](/build/api-routes)
+- [Authentication](/build/authentication)
