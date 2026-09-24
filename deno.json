@@ -4,7 +4,7 @@
     "build": "pnpm --filter @mern/client build && pnpm --filter @mern/server build",
     "runtime": {
       "type": "dynamic",
-      "entrypoint": "apps/server/dist/index.js",
+      "entrypoint": "apps/server/dist/deploy.js",
       "cwd": "."
     }
   }

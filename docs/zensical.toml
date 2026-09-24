@@ -28,6 +28,7 @@ nav = [
     "build/authentication.md",
     "build/validation.md",
     "build/api-routes.md",
+    "build/cron-jobs.md",
     "build/client-pages.md",
     "build/emails.md",
     "build/middleware.md",
