@@ -55,6 +55,8 @@ nav = [
     "reference/recommendations.md",
     "reference/security-checklist.md",
     "reference/skills.md",
+    "reference/privacy-policy-skill.md",
+    "reference/terms-of-use-skill.md",
   ] },
 ]
 

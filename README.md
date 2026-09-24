@@ -56,35 +56,7 @@ Use `authMiddleware(auth)` before a private route's handler. It returns `401` wh
 
 ## Validate API requests
 
-Put each Zod schema in `apps/server/src/schemas/`; it remains the single source of truth for both validation and types.
-
-```ts
-import * as z from "zod";
-
-export const createUserSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  email: z.email("Enter a valid email address"),
-});
-export type CreateUser = z.infer<typeof createUserSchema>;
-```
-
-Use `validate` from `apps/server/src/middleware/validate.ts` on the route. Parsed values, including defaults and transforms, are available in `res.locals.validated`:
-
-```ts
-app.post(
-  "/api/users",
-  validate({ body: createUserSchema }),
-  (_req, res) => res.status(201).json({ user: res.locals.validated.body }),
-);
-
-app.get(
-  "/api/users/:id",
-  validate({ params: userParamsSchema, query: paginationSchema }),
-  (_req, res) => res.json(res.locals.validated),
-);
-```
-
-The middleware returns `400` with `{ error, details }` on failure. Express infers inline route handlers from the schema; for an extracted handler, use `ValidatedLocals<typeof schemas>` from the same module rather than duplicating a request type.
+Put route-specific Zod schemas in `apps/server/src/schemas/` when needed. Use `validate` from `apps/server/src/middleware/validate.ts` to parse request bodies, params, or queries; parsed values, including defaults and transforms, are available in `res.locals.validated`. The middleware returns `400` with `{ error, details }` on failure. For an extracted handler, use `ValidatedLocals<typeof schemas>` from the same module rather than duplicating a request type.
 
 ## Private file uploads
 
@@ -103,6 +75,14 @@ request sequence, implementation, and verification.
 
 [Cron jobs](docs/docs/build/cron-jobs.md#pending-upload-cleanup) documents the cleanup
 CLI and hourly production scheduling. The API does not schedule cleanup automatically.
+
+## Model Context Protocol (MCP)
+
+Course applications may also expose a focused interface for AI clients through an MCP server. It lets a client retrieve application context and invoke narrowly defined tools while the server keeps validation, authorization, and business rules in control. See [MCP.md](MCP.md) for the model, examples, security boundaries, and the recommended `apps/mcp` extension point.
+
+## `llms.txt`
+
+The root [llms.txt](llms.txt) is a short index that helps AI tools find this starter's canonical documentation. It is not an MCP server and does not grant access to the application. See [LLMS.md](LLMS.md) for the student publishing and maintenance checklist.
 
 ## Commands
 
@@ -133,7 +113,7 @@ See [TESTING.md](TESTING.md) for the full testing guide, including test-layer bo
 
 Tests are split by cost and purpose:
 
-- **Unit** (`tests/unit/`) uses Vitest for isolated configuration and Zod schema behavior.
+- **Unit** (`tests/unit/`) uses Vitest for isolated configuration and email behavior.
 - **API integration** (`tests/integration/`) uses Vitest and Supertest to send requests through Express, middleware, Better Auth, and MongoDB without starting an HTTP listener.
 - **E2E** (`tests/e2e/`) uses Playwright to drive the real React → Express → MongoDB sign-up, protected API, and sign-out workflow, plus the 404 page served for unknown client URLs.
 
@@ -154,6 +134,8 @@ Ask your agent: **“Use design-md to establish the design system for my [applic
 You choose the product's character and any preferences about color, typography, density, rounding and icons. “Recommend for me” is enough for anything you don't care about. The agent derives readable color roles, type sizes, spacing, component states and accessibility rules, then records them in a root **DESIGN.md** and implements the supported choices through shadcn and the existing CSS. Nova, Neutral and Lucide are starter defaults, not permanent requirements; Base UI remains the component foundation. An established app can be documented, evolved or replaced; a fresh starter doesn't need a visual audit.
 
 DESIGN.md is the source of truth for future interface work. To change it, ask **“Use design-md to make our design system [warmer/more compact/etc.] and keep the implementation aligned.”** The agent updates the document and implementation together and preserves customized components. Avoid applying a full preset casually: it can overwrite component code and theme values. You do not need to scaffold another app.
+
+Light and dark semantic color tokens are already defined in `apps/client/src/styles.css`. Add the `dark` class to the `<html>` element to activate the dark theme. Theme controls, system-preference detection, and persistence are application choices and are intentionally not included in the starter. Build new UI with semantic utilities such as `bg-background`, `text-foreground`, and `text-muted-foreground` rather than fixed colors so it works with both themes.
 
 After establishing the system:
 
