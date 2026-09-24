@@ -21,9 +21,6 @@ importers:
       mongoose:
         specifier: ^9.10.1
         version: 9.10.1(socks@2.8.10)
-      portless:
-        specifier: ^0.15.6
-        version: 0.15.6
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -3512,12 +3509,6 @@ packages:
   playwright@1.63.0:
     resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
     engines: {node: '>=20'}
-    hasBin: true
-
-  portless@0.15.6:
-    resolution: {integrity: sha512-uOAwWLF32rmyEGFASzSO0VOaqb/AQxFCCzyZbPGd82UNNOfIEvc09zy92nroNibE5HNfzV4oVB0ObKbPXgkM9A==}
-    engines: {node: '>=24'}
-    os: [darwin, linux, win32]
     hasBin: true
 
   postal-mime@2.7.6:
@@ -7483,8 +7474,6 @@ snapshots:
   playwright@1.63.0:
     dependencies:
       playwright-core: 1.63.0
-
-  portless@0.15.6: {}
 
   postal-mime@2.7.6: {}
 

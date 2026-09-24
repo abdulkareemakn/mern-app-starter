@@ -1,8 +1,0 @@
-{
-  "apps": {
-    "apps/client": { "name": "mern", "appPort": 3000 },
-    "apps/server": { "name": "api.mern", "appPort": 3001 },
-    "packages/emails": { "name": "emails", "appPort": 3002 },
-    "packages/mail": { "name": "mail", "appPort": 3003 }
-  }
-}

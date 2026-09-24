@@ -17,11 +17,12 @@ Paste the generated value into `BETTER_AUTH_SECRET` in the root `.env`. Keep thi
 ```sh
 pnpm db:up
 pnpm dev
+pnpm dev:ui
 ```
 
-Open **https://mern.localhost**. Create an account, then use **Test protected API** to verify the complete flow. Portless starts the client, API, template preview, and local inbox at stable HTTPS URLs; its first run may ask to trust its local certificate authority. Vite proxies `/api` to Express on its internal port so cookies remain on one browser origin.
+Open **http://localhost:3000**. Create an account, then use **Test protected API** to verify the complete flow. `pnpm dev` runs the API and local mail catcher; `pnpm dev:ui` runs Vite in its own interactive terminal. Vite proxies `/api` to Express on port 3001 so cookies remain on one browser origin.
 
-Local email is captured automatically by MailDev. Open **https://mail.localhost** (or http://localhost:3003) to inspect messages; application code sends through `sendEmail` from `apps/server/src/lib/email-client.ts`. Development uses local SMTP on port 3025, while production uses Resend and requires `RESEND_API_KEY`.
+Local email is captured automatically by MailDev. Open **http://localhost:3003** to inspect messages; application code sends through `sendEmail` from `apps/server/src/lib/email-client.ts`. Development uses local SMTP on port 3025, while production uses Resend and requires `RESEND_API_KEY`. Run `pnpm dev:mail` separately when authoring templates, then open **http://localhost:3002**.
 
 Already have MongoDB or Atlas? Set `MONGODB_URI` and skip `pnpm db:up`. The app connects before accepting requests and exits if startup fails.
 
@@ -91,7 +92,9 @@ Run these at the repository root:
 
 | Command | Purpose |
 | --- | --- |
-| `pnpm dev` | Start client and API through Portless |
+| `pnpm dev` | Start the API and MailDev inbox/SMTP server |
+| `pnpm dev:ui` | Start the interactive Vite client on port 3000 |
+| `pnpm dev:mail` | Start the React Email preview on port 3002 |
 | `pnpm build` | Build the client and compile the server |
 | `pnpm typecheck` | Generate route types and check all packages |
 | `pnpm ui add <component>` | Add a shadcn Base UI component to the client |
@@ -155,7 +158,7 @@ Use the configured shadcn icon library for interface controls. For actual brand/
 pnpm docker:up
 ```
 
-Open http://localhost:3000. Stop `pnpm dev` first so port 3000 is available. The local-development and full-stack databases use separate volumes and do not share accounts. `down` preserves data; adding `--volumes` deletes the corresponding stack's database permanently.
+Open http://localhost:3000. Stop `pnpm dev:ui` first so port 3000 is available. The local-development and full-stack databases use separate volumes and do not share accounts. `down` preserves data; adding `--volumes` deletes the corresponding stack's database permanently.
 
 For a cloud VM with Docker, configure `APP_URL` and `BETTER_AUTH_URL` to the same public HTTPS origin, set a unique `BETTER_AUTH_SECRET`, and place the app behind your provider's HTTPS ingress/reverse proxy. `APP_PORT` selects the published host port; it does not change the public URL automatically. Keep MongoDB private, arrange backups of its volume, and inject secrets through your deployment platform. This Compose file is a single-host reference; it does not provision DNS, TLS, backups, or a managed database.
 
